@@ -3,8 +3,9 @@ using System.Collections;
 
 public class shoot : MonoBehaviour {
 	public GameObject[] decalPrefabs;
+	public bool useBullets;//if true use bullets, if false paint on touch
 	//public GameObject pinata;
-	//public GameObject bullet;
+	public GameObject bullet;
 	//public float speed;
 	private float waitToShoot;
 	public float waitDuration;
@@ -52,17 +53,26 @@ public class shoot : MonoBehaviour {
 					}
 				}
 			} else if (leftClickDown) {
-				// Handle mouse left click shooting
-				Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-				Debug.DrawRay(ray.origin, ray.direction * 100, Color.yellow);
-				if (Physics.Raycast(ray, out hit)) {
-					if (hit.collider.gameObject.tag == "Pinata") {
-						GameObject decal = Instantiate(decalPrefabs[decalIndex], hit.point, Quaternion.FromToRotation(Vector3.up, hit.normal)) as GameObject;
-						decal.transform.localScale *= Random.Range(1.0f,3.0f);
-						decal.transform.RotateAround(hit.normal, Random.Range(0.0f, 360.0f));
+				if(useBullets){//use bullets
+					float speed = 10f;
+					GameObject blah = Instantiate(bullet, transform.position + Vector3.forward * 50, transform.rotation) as GameObject;
+					blah.rigidbody.velocity = transform.forward * speed;
+
+				}else{
+					// Handle mouse left click shooting
+					Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+					Debug.DrawRay(ray.origin, ray.direction * 100, Color.yellow);
+					if (Physics.Raycast(ray, out hit)) {
+						if (hit.collider.gameObject.tag == "Pinata") {
+							GameObject decal = Instantiate(decalPrefabs[decalIndex], hit.point, Quaternion.FromToRotation(Vector3.up, hit.normal)) as GameObject;
+							decal.transform.localScale *= Random.Range(1.0f,3.0f);
+							decal.transform.RotateAround(hit.normal, Random.Range(0.0f, 360.0f));
+						}
 					}
 				}
 			}
+
+			
 			
 			waitToShoot = waitDuration;
 		}
@@ -81,9 +91,6 @@ public class shoot : MonoBehaviour {
 
 			waitToShoot = waitDuration;
 		}*/
-
-		/*GameObject blah = Instantiate(bullet, transform.position + Vector3.forward * 50, transform.rotation) as GameObject;
-		blah.rigidbody.velocity = transform.forward * speed;*/
 				
 		waitToShoot -= Time.deltaTime;
 	}

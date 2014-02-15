@@ -3,9 +3,9 @@ using System.Collections;
 
 public class bullet : MonoBehaviour {
 	public GameObject decalPrefab;
-	public GameObject bulletPrefab;
-	public float paintRange;
-	public float paintCount;
+	//public GameObject bulletPrefab;
+	//public float paintRange;
+	//public float paintCount;
 
 	public Material MaterialA, MaterialB, MaterialC;
 	Material targetMaterial;

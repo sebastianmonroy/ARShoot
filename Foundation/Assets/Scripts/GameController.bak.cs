@@ -11,7 +11,7 @@ public class GameController : MonoBehaviour {
 		int randomIndex = Random.Range(0, modelCount);
 		SwitchToModel(randomIndex);
 		
-		Debug.Log("Using model"+randomIndex);
+		Debug.Log("RAWRRRRRRRRRRRr Using model "+randomIndex);
 	}
 
 	void TurnOffMeshRenderer(){

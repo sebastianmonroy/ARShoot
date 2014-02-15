@@ -5,6 +5,7 @@ public class spawn : MonoBehaviour {
 	public GameObject[] modelPrefabs;
 	public int numModels;
 	public bool onlyModel;
+	public bool viewModel;
 	private GameObject model;
 	private float modelScale;
 
@@ -39,7 +40,7 @@ public class spawn : MonoBehaviour {
 	void Update () {
 		// Prevent model from ever being rendered
 		if (model != null && model.renderer.enabled) {
-			//model.renderer.enabled = false;
+			model.renderer.enabled = viewModel;
 		}
 	}
 }
