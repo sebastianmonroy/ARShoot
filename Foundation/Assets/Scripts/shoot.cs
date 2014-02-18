@@ -5,14 +5,9 @@ public class shoot : MonoBehaviour {
 	public GameObject[] decalPrefabs;
 	public bool useBullets;//if true use bullets, if false paint on touch
 	//public GameObject pinata;
-<<<<<<< HEAD
-	public GameObject bullet;
-	public float speed;
-=======
 	public GameObject bulletPrefab;
 	public float bulletSpeed;
 	//public float speed;
->>>>>>> fa214ac9b6eae67ea9a0b595f856905a96fc3888
 	private float waitToShoot;
 	public float waitDuration;
 	private bool leftClickDown;
