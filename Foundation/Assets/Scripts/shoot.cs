@@ -6,7 +6,7 @@ public class shoot : MonoBehaviour {
 	public bool useBullets;//if true use bullets, if false paint on touch
 	//public GameObject pinata;
 	public GameObject bullet;
-	//public float speed;
+	public float speed;
 	private float waitToShoot;
 	public float waitDuration;
 	private bool leftClickDown;
@@ -54,10 +54,8 @@ public class shoot : MonoBehaviour {
 				}
 			} else if (leftClickDown) {
 				if(useBullets){//use bullets
-					float speed = 10f;
 					GameObject blah = Instantiate(bullet, transform.position + Vector3.forward * 50, transform.rotation) as GameObject;
 					blah.rigidbody.velocity = transform.forward * speed;
-
 				}else{
 					// Handle mouse left click shooting
 					Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -72,8 +70,6 @@ public class shoot : MonoBehaviour {
 				}
 			}
 
-			
-			
 			waitToShoot = waitDuration;
 		}
 
@@ -92,6 +88,6 @@ public class shoot : MonoBehaviour {
 			waitToShoot = waitDuration;
 		}*/
 				
-		waitToShoot -= Time.deltaTime;
+		waitToShoot = waitToShoot - 1;
 	}
 }

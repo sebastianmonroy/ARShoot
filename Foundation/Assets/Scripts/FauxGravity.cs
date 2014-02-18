@@ -17,12 +17,26 @@ public class FauxGravity : MonoBehaviour {
 		Vector3 explosionPos = transform.position;
 		Collider[] colliders = Physics.OverlapSphere (explosionPos, radius);
 		
+		//gravitate bullets
 		foreach (Collider hit in colliders){
 			if(hit.tag == "Bullet"){
 				Vector3 gravityUp = hit.transform.position - transform.position;
     			gravityUp.Normalize();
 
 				hit.rigidbody.AddForce (gravityUp * gravity);
+			}
+		}
+
+
+		colliders = Physics.OverlapSphere (explosionPos, 1000.0f);
+		
+		//gravitate bullets
+		foreach (Collider hit in colliders){
+			if(hit.tag == "Structure"){
+				Vector3 gravityUp = hit.transform.position - transform.position;
+    			gravityUp.Normalize();
+
+				hit.rigidbody.AddForce (gravityUp * -300.0f);
 			}
 		}
 	}
