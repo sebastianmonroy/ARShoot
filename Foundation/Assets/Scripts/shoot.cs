@@ -5,8 +5,14 @@ public class shoot : MonoBehaviour {
 	public GameObject[] decalPrefabs;
 	public bool useBullets;//if true use bullets, if false paint on touch
 	//public GameObject pinata;
+<<<<<<< HEAD
 	public GameObject bullet;
 	public float speed;
+=======
+	public GameObject bulletPrefab;
+	public float bulletSpeed;
+	//public float speed;
+>>>>>>> fa214ac9b6eae67ea9a0b595f856905a96fc3888
 	private float waitToShoot;
 	public float waitDuration;
 	private bool leftClickDown;
@@ -53,11 +59,13 @@ public class shoot : MonoBehaviour {
 					}
 				}
 			} else if (leftClickDown) {
-				if(useBullets){//use bullets
-					GameObject blah = Instantiate(bullet, transform.position + Vector3.forward * 50, transform.rotation) as GameObject;
-					blah.rigidbody.velocity = transform.forward * speed;
-				}else{
-					// Handle mouse left click shooting
+				// Handle mouse left click shooting
+				if(useBullets) {
+					// use bullets
+					GameObject bullet = Instantiate(bulletPrefab, transform.position, transform.rotation) as GameObject;
+					bullet.rigidbody.velocity = transform.forward * bulletSpeed;
+				} else {
+					// use raycasts
 					Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 					Debug.DrawRay(ray.origin, ray.direction * 100, Color.yellow);
 					if (Physics.Raycast(ray, out hit)) {
