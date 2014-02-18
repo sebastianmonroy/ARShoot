@@ -11,6 +11,7 @@ GameObject:
   - 33: {fileID: 3300000}
   - 23: {fileID: 2300000}
   - 64: {fileID: 6400000}
+  - 114: {fileID: 11400000}
   m_Layer: 0
   m_Name: chicken
   m_TagString: Pinata
@@ -70,6 +71,22 @@ MeshCollider:
   m_SmoothSphereCollisions: 0
   m_Convex: 0
   m_Mesh: {fileID: 4300000, guid: 4dc75a1708e9041b2b58ecc0e5fa76d8, type: 3}
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2c7e4f34b0ccd2946bd9385654d49338, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  boxScale: 1
+  cubeScale: 10
+  cubePrefab: {fileID: 100000, guid: be855230c3810934288ba872ef73d649, type: 2}
+  interior: 0
+  reset: 0
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1

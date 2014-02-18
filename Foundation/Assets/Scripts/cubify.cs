@@ -12,6 +12,7 @@ public class cubify : MonoBehaviour {
 	public float cubeScale;
 	public GameObject cubePrefab;
 	private Vector3 cubeSize;
+	public bool interior;
 	public bool reset;
 
 	void Start () {
@@ -19,8 +20,9 @@ public class cubify : MonoBehaviour {
 		modelExtents = this.renderer.bounds.extents;
 		modelBoundMin = modelCenter - modelExtents;
 		modelBoundMax = modelCenter + modelExtents;
-		
-		reset = true;
+
+		// only spawn when user clicks "Reset" checkbox
+		reset = false;
 	}
 
 	void Update () {
@@ -43,12 +45,12 @@ public class cubify : MonoBehaviour {
 				for (float j = boxBoundMin.y; j <= boxBoundMax.y; j += cubeSize.y) {
 					for (float k = boxBoundMin.z; k <= boxBoundMax.z; k += cubeSize.z) {
 						//print(new Vector3(i, j, k));
-						bool canSpawnCube = false;
+						bool canSpawnCube = !interior;
 						
 						Collider[] col = Physics.OverlapSphere(new Vector3(i, j, k) , cubeSize.x/2);
 						foreach (Collider c in col) {
 							if (c.gameObject == this.gameObject) {
-								canSpawnCube = true;
+								canSpawnCube = !canSpawnCube;
 								break;
 							}
 						}
