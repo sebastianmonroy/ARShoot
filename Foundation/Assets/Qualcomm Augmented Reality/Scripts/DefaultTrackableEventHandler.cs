@@ -68,6 +68,7 @@ public class DefaultTrackableEventHandler : MonoBehaviour,
     {
         Renderer[] rendererComponents = GetComponentsInChildren<Renderer>(true);
         Collider[] colliderComponents = GetComponentsInChildren<Collider>(true);
+        Rigidbody[] rigidbodyComponents = GetComponentsInChildren<Rigidbody>(true);
 
         // Enable rendering:
         foreach (Renderer component in rendererComponents)
@@ -81,6 +82,13 @@ public class DefaultTrackableEventHandler : MonoBehaviour,
             component.enabled = true;
         }
 
+        // Disable rigidbodies:
+        foreach (Rigidbody component in rigidbodyComponents)
+        {
+            //component.enabled = true;
+            component.constraints = RigidbodyConstraints.None;
+        }
+
         Debug.Log("Trackable " + mTrackableBehaviour.TrackableName + " found");
     }
 
@@ -89,6 +97,7 @@ public class DefaultTrackableEventHandler : MonoBehaviour,
     {
         Renderer[] rendererComponents = GetComponentsInChildren<Renderer>(true);
         Collider[] colliderComponents = GetComponentsInChildren<Collider>(true);
+        Rigidbody[] rigidbodyComponents = GetComponentsInChildren<Rigidbody>(true);
 
         // Disable rendering:
         foreach (Renderer component in rendererComponents)
@@ -100,6 +109,13 @@ public class DefaultTrackableEventHandler : MonoBehaviour,
         foreach (Collider component in colliderComponents)
         {
             component.enabled = false;
+        }
+
+        // Disable rigidbodies:
+        foreach (Rigidbody component in rigidbodyComponents)
+        {
+            //component.enabled = false;
+            component.constraints =  RigidbodyConstraints.FreezeAll;
         }
 
         Debug.Log("Trackable " + mTrackableBehaviour.TrackableName + " lost");
