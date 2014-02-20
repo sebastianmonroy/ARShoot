@@ -86,6 +86,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   decalPrefab: {fileID: 100000, guid: a568aa8b5f64fbb4194052f7a099c678, type: 2}
+  timeOut: 60
   MaterialA: {fileID: 2100000, guid: 7caead29a0ea3ef478d3c140348c5bc9, type: 2}
   MaterialB: {fileID: 2100000, guid: ce263eaccd9b340309fb273b34e17c0c, type: 2}
   MaterialC: {fileID: 2100000, guid: 772d8fd22ae6c4880898aeb3e6f67dec, type: 2}

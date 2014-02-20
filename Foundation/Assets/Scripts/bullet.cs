@@ -3,6 +3,7 @@ using System.Collections;
 
 public class bullet : MonoBehaviour {
 	public GameObject decalPrefab;
+	public float timeOut;
 
 	//public GameObject bulletPrefab;
 	//public float paintRange;
@@ -13,7 +14,7 @@ public class bullet : MonoBehaviour {
 	
 	// Use this for initialization
 	void Start () {
-		Destroy(gameObject, 10.0f);
+		Destroy(gameObject, timeOut);
 		int randomIndex = Random.Range(0, 3);
 		switch(randomIndex){
 		case 0:

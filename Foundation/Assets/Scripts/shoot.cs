@@ -45,20 +45,30 @@ public class shoot : MonoBehaviour {
 			RaycastHit hit = new RaycastHit();
 			if (Input.touchCount > 0) {
 				// Handle tablet touch shooting
-				Ray ray = Camera.main.ScreenPointToRay(Input.touches[0].position);
-				if (Physics.Raycast(ray, out hit)) {
-					if (hit.collider.gameObject.tag == "Pinata") {
-						GameObject decal = Instantiate(decalPrefabs[decalIndex], hit.point, Quaternion.FromToRotation(Vector3.up, hit.normal)) as GameObject;
-						decal.transform.localScale *= Random.Range(1.0f,3.0f);
-						decal.transform.RotateAround(hit.normal, Random.Range(0.0f, 360.0f));
+				if(useBullets) {
+					// use bullets
+					Ray ray = Camera.main.ScreenPointToRay(Input.touches[0].position);
+					GameObject bullet = Instantiate(bulletPrefab, transform.position, transform.rotation) as GameObject;
+					bullet.rigidbody.velocity = ray.direction.normalized * bulletSpeed;
+				} else {
+					// use raycasts
+					Ray ray = Camera.main.ScreenPointToRay(Input.touches[0].position);
+					Debug.DrawRay(ray.origin, ray.direction * 100, Color.yellow);
+					if (Physics.Raycast(ray, out hit)) {
+						if (hit.collider.gameObject.tag == "Pinata") {
+							GameObject decal = Instantiate(decalPrefabs[decalIndex], hit.point, Quaternion.FromToRotation(Vector3.up, hit.normal)) as GameObject;
+							decal.transform.localScale *= Random.Range(1.0f,3.0f);
+							decal.transform.RotateAround(hit.normal, Random.Range(0.0f, 360.0f));
+						}
 					}
 				}
 			} else if (leftClickDown) {
 				// Handle mouse left click shooting
 				if(useBullets) {
 					// use bullets
+					Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 					GameObject bullet = Instantiate(bulletPrefab, transform.position, transform.rotation) as GameObject;
-					bullet.rigidbody.velocity = transform.forward * bulletSpeed;
+					bullet.rigidbody.velocity = ray.direction.normalized * bulletSpeed;
 				} else {
 					// use raycasts
 					Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
