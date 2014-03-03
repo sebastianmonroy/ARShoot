@@ -10,6 +10,9 @@ TagManager:
   - Trampoline
   - Ball
   - Paddle
+  - Cell
+  - Block
+  - Grid
   - 
   Builtin Layer 0: Default
   Builtin Layer 1: TransparentFX
