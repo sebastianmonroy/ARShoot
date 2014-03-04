@@ -11,6 +11,7 @@ public class build : MonoBehaviour {
 	private int dragMode; // 1: build, 0: nothing, -1: remove
 	private float delayCount;
 	private float initialPinchDistance;
+	private float pinchMultiplier;
 	// Use this for initialization
 	void Start () {
 		waitCount = waitDuration;
@@ -66,10 +67,12 @@ public class build : MonoBehaviour {
 				}
 			} else if (input[0] == 's') {
 				string amount = input.Substring(1);
-				int moveAmount = int.Parse(amount);
+				float curCellSize = grid.GetComponent<GridHandler>().cellSize.x;
+				float moveAmount = int.Parse(amount) * curCellSize/4;
+
 				grid.transform.position += new Vector3(0, moveAmount, 0);
 				print("scroll" + moveAmount);
-				grid.transform.position = new Vector3(grid.transform.position.x, Mathf.Clamp(grid.transform.position.y, -50, 200), grid.transform.position.z);
+				grid.transform.position = new Vector3(grid.transform.position.x, Mathf.Clamp(Mathf.Round(grid.transform.position.y*1000)/1000, -50, 200), grid.transform.position.z);
 			} else if (input[0] == 'p') {
 				string amount = input.Substring(1);
 				float scaleAmount = float.Parse(amount);
@@ -111,13 +114,16 @@ public class build : MonoBehaviour {
 			//delayCount += Time.deltaTime;
 			if (initialPinchDistance == -1) {
 				initialPinchDistance = currentPinchDistance;
+				pinchMultiplier = 2;
 				return "false";
-			} else if (currentPinchDistance >= initialPinchDistance*2) {
+			} else if (currentPinchDistance >= initialPinchDistance * pinchMultiplier) {
 				fingerPinchScale = currentPinchDistance / initialPinchDistance - (currentPinchDistance % initialPinchDistance) / initialPinchDistance;
 				fingerPinchScale = 1 / fingerPinchScale;
+				pinchMultiplier = Mathf.Clamp(pinchMultiplier*2, 2.0f, 4.0f);
 				return "p" + fingerPinchScale;
-			} else if (currentPinchDistance <= initialPinchDistance/2) {
+			} else if (currentPinchDistance <= initialPinchDistance / pinchMultiplier) {
 				fingerPinchScale = initialPinchDistance / currentPinchDistance - (initialPinchDistance % currentPinchDistance) / currentPinchDistance;
+				pinchMultiplier = Mathf.Clamp(pinchMultiplier*2, 2.0f, 4.0f);
 				return "p" + fingerPinchScale;
 			} else {
 				return "false";
@@ -125,11 +131,11 @@ public class build : MonoBehaviour {
 		} else if (Input.touchCount == 3) {
 			float totalMove = 0;
 			foreach (Touch t in Input.touches) {
-				totalMove += t.deltaPosition.y;
+				totalMove += t.deltaPosition.y * Time.deltaTime/t.deltaTime/5;
 			}
 
-			int deltaY = (int) (totalMove / Input.touchCount * fingerScrollScale);
-			return "s" + (deltaY - deltaY % 5);
+			int deltaY = (int) (totalMove / Input.touchCount);
+			return "s" + Mathf.Clamp(deltaY, -1, 1);
 		} else {
 			delayCount = 0;
 			initialPinchDistance = -1;

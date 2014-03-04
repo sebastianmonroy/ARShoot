@@ -11,7 +11,7 @@ public class cell : MonoBehaviour {
 	}
 
 	void Update() {
-
+		
 	}
 
 	void SpawnBlock() {
