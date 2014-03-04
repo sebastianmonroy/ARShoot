@@ -2,16 +2,16 @@
 using System.Collections;
 
 public class ball : MonoBehaviour {
-
+	private GameObject trampoline;
 	// Use this for initialization
 	void Start () {
-	
+		trampoline = GameObject.FindGameObjectWithTag("Trampoline");
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		if (this.transform.position.y < 0) {
-			Destroy(this);
+		if (this.transform.position.y < trampoline.transform.position.y) {
+			Destroy(this.gameObject);
 		}
 	}
 
