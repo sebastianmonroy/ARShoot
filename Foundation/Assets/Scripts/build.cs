@@ -78,6 +78,7 @@ public class build : MonoBehaviour {
 			} else if (input[0] == 'b') {
 				GameObject[] blocks = GameObject.FindGameObjectsWithTag("Block");
 				foreach (GameObject b in blocks) {
+					b.collider.enabled = true;
 					b.rigidbody.useGravity = true;
 					b.rigidbody.constraints = RigidbodyConstraints.None;
 				}

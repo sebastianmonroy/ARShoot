@@ -12,8 +12,8 @@ public class block : MonoBehaviour {
 	private Color originalColor;
 	private Color selectedColor;
 	private Color invisibleColor;
-	private List<GameObject> connectedBlocks = new List<GameObject>();
 	public GameObject jointPrefab;
+	private List<GameObject> connectedObjects = new List<GameObject>();
 
 	// Use this for initialization
 	void Start () {
@@ -27,30 +27,90 @@ public class block : MonoBehaviour {
 		invisibleColor = new Color(this.renderer.material.color.r, this.renderer.material.color.g, this.renderer.material.color.b, 0.5f);
 		this.renderer.material.color = selectedColor;
 
-		/*RaycastHit[] hits;
-		hits = Physics.SphereCastAll(this.transform.position, 20, Vector3.up);
+		RaycastHit[] hits;
+		hits = Physics.SphereCastAll(this.transform.position, 15, Vector3.up);
 
 		foreach (RaycastHit h in hits) {
+			GameObject targetObject = h.collider.gameObject;
 			if (h.collider.gameObject.tag == "Block") {
-				if (!alreadyConnected(h.collider.gameObject)) {
-					connectedBlocks.Add(h.collider.gameObject);
-					GameObject jointSource = Instantiate(jointPrefab, this.transform.position, this.transform.rotation) as GameObject;
-					jointSource.transform.parent = this.transform;
-					GameObject jointTarget = Instantiate(jointPrefab, h.collider.gameObject.transform.position, h.collider.gameObject.transform.rotation) as GameObject;
-					jointTarget.transform.parent = h.collider.gameObject.transform;
+				GameObject jointSource = Instantiate(jointPrefab, this.transform.position, this.transform.rotation) as GameObject;
+				jointSource.transform.parent = this.transform;
+				GameObject jointTarget = Instantiate(jointPrefab, targetObject.transform.position, targetObject.transform.rotation) as GameObject;
+				jointTarget.transform.parent = targetObject.transform;
 
-					springSource = jointSource.GetComponent<SpringJoint>();
-					springSource.maxDistance = 1.2f*(jointSource.transform.position - jointTarget.transform.position);
-					springSource.connectedBody = jointTarget;
-				}
+				jointTarget.transform.parent.GetComponent<block>().AddConnection(jointSource);
+
+				SpringJoint springSource = jointSource.GetComponent<SpringJoint>();
+				springSource.maxDistance = 1.2f*(jointSource.transform.position - jointTarget.transform.position).magnitude;
+				springSource.connectedBody = jointTarget.rigidbody;
 			}
-		}*/
-
+		}
 	}
 
-	private bool alreadyConnected(GameObject block) {
+	public void RemoveConnection(GameObject jointTarget) {
+		foreach (Transform t in this.transform) {
+			if (t.gameObject.GetComponent<SpringJoint>().connectedBody == jointTarget.rigidbody) {
+				Destroy(t.gameObject);
+				connectedObjects.Remove(jointTarget);
+				break;
+			}
+		}
+	}
+
+	public void AddConnection(GameObject jointSource) {
+		connectedObjects.Add(jointSource);
+	}
+
+	/*public void createJoint(GameObject targetObject) {
+		createSourceJoint(targetObject);
+		target.GetComponent<block>().createTargetJoint(this.gameObject);
+	}
+
+	public void createTargetJoint(GameObject sourceObject) {
+		if (!alreadyHaveJoint(sourceObject)) {
+			targetJoints.Add(sourceObject);
+		}
+	}
+
+	public void createSourceJoint(GameObject targetObject) {
+		if (!alreadyHaveJoint(targetObject)) {
+			GameObject jointSource = Instantiate(jointPrefab, this.transform.position, this.transform.rotation) as GameObject;
+			jointSource.transform.parent = this.transform;
+			GameObject jointTarget = Instantiate(jointPrefab, targetObject.transform.position, targetObject.transform.rotation) as GameObject;
+			jointTarget.transform.parent = targetObject.transform;
+
+			springSource = jointSource.GetComponent<SpringJoint>();
+			springSource.maxDistance = 1.2f*(jointSource.transform.position - jointTarget.transform.position);
+			springSource.connectedBody = jointTarget;
+
+			sourceJoints.Add(targetObject);
+		}
+	}
+
+	private GameObject getTargetJoint(GameObject joint) {
+		GameObject targetJoint = null;
+		foreach (GameObject j in targetJoints) {
+			if (j == joint) {
+				targetJoint = j;
+				break;
+			}
+		}
+		return targetJoint;
+	}
+
+	public GameObject removeSourceJoint(GameObject targetJoint) {
+		sourceJoints.Remove(targetJoint);
+		Destroy(targetJoint.gameObject);
+	}
+
+	public GameObject removeJoint(GameObject targetJoint) {
+		removeSourceJoint(targetJoint);
+		targetJoint.GetComponent<block>.removeSourceJoint
+	}
+
+	private bool alreadyHaveSourceJoint(GameObject block) {
 		bool found = false;
-		foreach (GameObject b in connectedBlocks) {
+		foreach (GameObject b in sourceJoints) {
 			if (b == block) {
 				found = true;
 				break;
@@ -58,6 +118,10 @@ public class block : MonoBehaviour {
 		}
 		return found;
 	}
+
+	private bool alreadyHaveJoint(GameObject block) {
+		return (alreadyHaveTargetJoint(block) || alreadyHaveSourceJoint(block));
+	}*/
 	
 	// Update is called once per frame
 	void Update () {
@@ -97,6 +161,12 @@ public class block : MonoBehaviour {
 	public void Remove() {
 		if (removeable) {
 			Destroy(this.gameObject);
+		}
+	}
+
+	public void OnDestroy() {
+		foreach (GameObject c in connectedObjects) {
+			c.GetComponent<block>().RemoveConnection(this.gameObject);
 		}
 	}
 }
