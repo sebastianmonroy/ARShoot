@@ -39,19 +39,8 @@ public class build : MonoBehaviour {
 			}*/
 
 			string input = getInput();
-			if (input[0] == 'c') {	
-				RaycastHit hit = new RaycastHit();
-				Debug.DrawRay(inputRay.origin, inputRay.direction * 100, Color.yellow);
-				if (Physics.Raycast(inputRay, out hit)) {
-					if (hit.collider.gameObject.tag == "Cell") {
-						hit.collider.gameObject.SendMessage("SpawnBlock");
-						dragMode = 1;
-					} else if (hit.collider.gameObject.tag == "Block") {
-						hit.collider.gameObject.SendMessage("Remove");
-						dragMode = -1;
-					}
-				}
-			} else if (input[0] == 'd') {
+			if (input[0] == 'c') {
+				// CLICK / ONE-FINGERTOUCH
 				RaycastHit hit = new RaycastHit();
 				Debug.DrawRay(inputRay.origin, inputRay.direction * 100, Color.yellow);
 				if (Physics.Raycast(inputRay, out hit)) {
@@ -63,6 +52,14 @@ public class build : MonoBehaviour {
 						if (hit.collider.gameObject.tag == "Block") {
 							hit.collider.gameObject.SendMessage("Remove");
 						}
+					} else {
+						if (hit.collider.gameObject.tag == "Cell") {
+							hit.collider.gameObject.SendMessage("SpawnBlock");
+							dragMode = 1;
+						} else if (hit.collider.gameObject.tag == "Block") {
+							hit.collider.gameObject.SendMessage("Remove");
+							dragMode = -1;
+						}
 					}
 				}
 			} else if (input[0] == 's') {
@@ -72,12 +69,18 @@ public class build : MonoBehaviour {
 
 				grid.transform.position += new Vector3(0, moveAmount, 0);
 				print("scroll" + moveAmount);
-				grid.transform.position = new Vector3(grid.transform.position.x, Mathf.Clamp(Mathf.Round(grid.transform.position.y*1000)/1000, -50, 200), grid.transform.position.z);
+				grid.transform.position = new Vector3(grid.transform.position.x, Mathf.Clamp(Mathf.Round(grid.transform.position.y*1000)/1000, 0, 200), grid.transform.position.z);
 			} else if (input[0] == 'p') {
 				string amount = input.Substring(1);
 				float scaleAmount = float.Parse(amount);
 				grid.SendMessage("SpawnGrid", scaleAmount);
 				print("pinch" + scaleAmount);
+			} else if (input[0] == 'b') {
+				GameObject[] blocks = GameObject.FindGameObjectsWithTag("Block");
+				foreach (GameObject b in blocks) {
+					b.rigidbody.useGravity = true;
+					b.rigidbody.constraints = RigidbodyConstraints.None;
+				}
 			}
 			waitCount = waitDuration;
 		}
@@ -92,15 +95,14 @@ public class build : MonoBehaviour {
 		} else if (Input.GetAxis("Mouse ScrollWheel") != 0) {
 			float deltaY = Input.GetAxis("Mouse ScrollWheel");
 			return "s" + (int) (deltaY * mouseScrollScale);
-		} else if (Input.touchCount == 1 && Input.GetTouch(0).phase == TouchPhase.Began) {
+		} else if (Input.touchCount == 1) {
 			initialPinchDistance = -1;
-			if (delayCount >= 0.05f && Input.touchCount == 1) {
+			if (delayCount >= 0.1f) {
 				inputRay = Camera.main.ScreenPointToRay(Input.touches[0].position);
-				dragMode = 0;
-				delayCount = 0;
 				return "c";
 			} else {
 				delayCount += Time.deltaTime;
+				dragMode = 0;
 				return "false";
 			}			
 		} else if (Input.touchCount == 1 && Input.GetTouch(0).phase != TouchPhase.Moved) {
@@ -109,6 +111,7 @@ public class build : MonoBehaviour {
 			inputRay = Camera.main.ScreenPointToRay(Input.touches[0].position);
 			return "d";
 		} else if (Input.touchCount == 2) {
+			delayCount = 0;
 			float currentPinchDistance = Vector2.Distance(Input.GetTouch(0).position, Input.GetTouch(1).position);
 			float fingerPinchScale;
 			//delayCount += Time.deltaTime;
@@ -129,6 +132,7 @@ public class build : MonoBehaviour {
 				return "false";
 			}
 		} else if (Input.touchCount == 3) {
+			delayCount = 0;
 			float totalMove = 0;
 			foreach (Touch t in Input.touches) {
 				totalMove += t.deltaPosition.y * Time.deltaTime/t.deltaTime/5;
@@ -136,8 +140,11 @@ public class build : MonoBehaviour {
 
 			int deltaY = (int) (totalMove / Input.touchCount);
 			return "s" + Mathf.Clamp(deltaY, -1, 1);
+		} else if (Input.touchCount == 4) {
+			return "b";
 		} else {
 			delayCount = 0;
+			dragMode = 0;
 			initialPinchDistance = -1;
 			return "false";
 		}
