@@ -82,6 +82,11 @@ public class build : MonoBehaviour {
 					b.rigidbody.useGravity = true;
 					b.rigidbody.constraints = RigidbodyConstraints.None;
 				}
+			} else if (input[0] == 'r') {
+				GameObject[] blocks = GameObject.FindGameObjectsWithTag("Block");
+				foreach (GameObject b in blocks) {
+					Destroy (b);
+				}
 			}
 			waitCount = waitDuration;
 		}
@@ -143,6 +148,8 @@ public class build : MonoBehaviour {
 			return "s" + Mathf.Clamp(deltaY, -1, 1);
 		} else if (Input.touchCount == 4) {
 			return "b";
+		} else if (Input.touchCount == 5) {
+			return "r";
 		} else {
 			delayCount = 0;
 			dragMode = 0;
