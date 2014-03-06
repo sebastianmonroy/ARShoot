@@ -51,4 +51,8 @@ public class GridHandler : MonoBehaviour {
 			//break;
 		}
 	}
+
+	public void SpawnGrid() {
+		this.SpawnGrid(currentCellScale);
+	}
 }

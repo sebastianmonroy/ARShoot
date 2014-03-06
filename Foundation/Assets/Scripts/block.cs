@@ -27,29 +27,55 @@ public class block : MonoBehaviour {
 		invisibleColor = new Color(this.renderer.material.color.r, this.renderer.material.color.g, this.renderer.material.color.b, 0.5f);
 		this.renderer.material.color = selectedColor;
 
-		RaycastHit[] hits;
-		hits = Physics.SphereCastAll(this.transform.position, 15, Vector3.up);
+		List<GameObject> hitBlocks = new List<GameObject>();
+		//hits = Physics.SphereCastAll(this.transform.position, 50, Vector3.up);
+		Vector3[] directions = {Vector3.left, Vector3.right, Vector3.forward, -Vector3.forward, -Vector3.up, Vector3.up};
+		int layerMask = ~(1 << 8); // exclude grid layer
+		RaycastHit hit;
+		foreach (Vector3 v in directions) {
+			if (Physics.Raycast(this.transform.position, v, out hit, this.renderer.bounds.size.x, layerMask)) {
+				if (hit.collider.gameObject.tag == "Block") {
+					hitBlocks.Add(hit.collider.gameObject);
+				}
+			}
+		}
+		print(hitBlocks.Count);
 
-		foreach (RaycastHit h in hits) {
-			GameObject targetObject = h.collider.gameObject;
-			if (h.collider.gameObject.tag == "Block") {
+		foreach (GameObject b in hitBlocks) {
+			if (b.tag == "Block") {
 				GameObject jointSource = Instantiate(jointPrefab, this.transform.position, this.transform.rotation) as GameObject;
 				jointSource.transform.parent = this.transform;
-				GameObject jointTarget = Instantiate(jointPrefab, targetObject.transform.position, targetObject.transform.rotation) as GameObject;
-				jointTarget.transform.parent = targetObject.transform;
+				jointSource.name = "joint source";
+				GameObject jointTarget = Instantiate(jointPrefab, b.transform.position, b.transform.rotation) as GameObject;
+				jointTarget.transform.parent = b.transform;
+				//Destroy(jointTarget.GetComponent<SpringJoint>());
+				jointTarget.name = "joint target";
 
-				jointTarget.transform.parent.GetComponent<block>().AddConnection(jointSource);
+				/*SpringJoint springSource = jointSource.GetComponent<SpringJoint>();
+				springSource.maxDistance = 0.8f*(jointSource.transform.position - jointTarget.transform.position).magnitude;
+				springSource.connectedBody = b.rigidbody;
 
-				SpringJoint springSource = jointSource.GetComponent<SpringJoint>();
-				springSource.maxDistance = 1.2f*(jointSource.transform.position - jointTarget.transform.position).magnitude;
-				springSource.connectedBody = jointTarget.rigidbody;
+				SpringJoint springTarget = jointTarget.GetComponent<SpringJoint>();
+				springTarget.maxDistance = 0.8f*(jointSource.transform.position - jointTarget.transform.position).magnitude;
+				springTarget.connectedBody = this.rigidbody;*/
+
+				FixedJoint springSource = jointSource.GetComponent<FixedJoint>();
+				//springSource.maxDistance = 0.8f*(jointSource.transform.position - jointTarget.transform.position).magnitude;
+				springSource.connectedBody = b.rigidbody;
+
+				FixedJoint springTarget = jointTarget.GetComponent<FixedJoint>();
+				//springTarget.maxDistance = 0.8f*(jointSource.transform.position - jointTarget.transform.position).magnitude;
+				springTarget.connectedBody = this.rigidbody;
+
+				this.AddConnection(b);
+				b.GetComponent<block>().AddConnection(this.gameObject);
 			}
 		}
 	}
 
 	public void RemoveConnection(GameObject jointTarget) {
 		foreach (Transform t in this.transform) {
-			if (t.gameObject.GetComponent<SpringJoint>().connectedBody == jointTarget.rigidbody) {
+			if (t.gameObject.GetComponent<FixedJoint>().connectedBody == jointTarget.rigidbody) {
 				Destroy(t.gameObject);
 				connectedObjects.Remove(jointTarget);
 				break;
@@ -58,7 +84,7 @@ public class block : MonoBehaviour {
 	}
 
 	public void AddConnection(GameObject jointSource) {
-		connectedObjects.Add(jointSource);
+		this.connectedObjects.Add(jointSource);
 	}
 
 	/*public void createJoint(GameObject targetObject) {
@@ -160,13 +186,14 @@ public class block : MonoBehaviour {
 
 	public void Remove() {
 		if (removeable) {
+			foreach (GameObject c in connectedObjects) {
+				c.GetComponent<block>().RemoveConnection(this.gameObject);
+			}
 			Destroy(this.gameObject);
 		}
 	}
 
 	public void OnDestroy() {
-		foreach (GameObject c in connectedObjects) {
-			c.GetComponent<block>().RemoveConnection(this.gameObject);
-		}
+
 	}
 }

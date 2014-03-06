@@ -18,7 +18,7 @@ public class shoot : MonoBehaviour {
 	void Start () {
 		//pinata = GameObject.FindWithTag("pinata");
 		decalIndex = Random.Range(0,decalPrefabs.Length);
-		waitToShoot = waitDuration;
+		waitToShoot = 0;
 	}
 	
 	// Update is called once per frame
@@ -91,6 +91,6 @@ public class shoot : MonoBehaviour {
 			waitToShoot = waitDuration;
 		}*/
 				
-		waitToShoot = waitToShoot - 1;
+		waitToShoot = waitToShoot - Time.deltaTime;
 	}
 }

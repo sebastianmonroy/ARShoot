@@ -12,10 +12,12 @@ public class build : MonoBehaviour {
 	private float delayCount;
 	private float initialPinchDistance;
 	private float pinchMultiplier;
+	private bool simulating;
 	// Use this for initialization
 	void Start () {
 		waitCount = waitDuration;
 		delayCount = 0;
+		simulating = false;
 	}
 	
 	// Update is called once per frame
@@ -39,7 +41,7 @@ public class build : MonoBehaviour {
 			}*/
 
 			string input = getInput();
-			if (input[0] == 'c') {
+			if (input[0] == 'c' && !simulating) {
 				// CLICK / ONE-FINGERTOUCH
 				RaycastHit hit = new RaycastHit();
 				Debug.DrawRay(inputRay.origin, inputRay.direction * 100, Color.yellow);
@@ -62,30 +64,49 @@ public class build : MonoBehaviour {
 						}
 					}
 				}
-			} else if (input[0] == 's') {
+			} else if (input[0] == 's' && !simulating) {
 				string amount = input.Substring(1);
 				float curCellSize = grid.GetComponent<GridHandler>().cellSize.x;
-				float moveAmount = int.Parse(amount) * curCellSize/4;
+				float moveAmount = int.Parse(amount) * curCellSize;
 
 				grid.transform.position += new Vector3(0, moveAmount, 0);
 				print("scroll" + moveAmount);
 				grid.transform.position = new Vector3(grid.transform.position.x, Mathf.Clamp(Mathf.Round(grid.transform.position.y*1000)/1000, 0, 200), grid.transform.position.z);
-			} else if (input[0] == 'p') {
+			} else if (input[0] == 'p' && !simulating) {
+
 				string amount = input.Substring(1);
 				float scaleAmount = float.Parse(amount);
+				print("pinch" + scaleAmount);
 				grid.SendMessage("SpawnGrid", scaleAmount);
 				print("pinch" + scaleAmount);
 			} else if (input[0] == 'b') {
-				GameObject[] blocks = GameObject.FindGameObjectsWithTag("Block");
-				foreach (GameObject b in blocks) {
-					b.collider.enabled = true;
-					b.rigidbody.useGravity = true;
-					b.rigidbody.constraints = RigidbodyConstraints.None;
+				simulating = !simulating;
+				//grid.transform.position = new Vector3(grid.transform.position.x, 200, grid.transform.position.z);
+				grid.active = !simulating;
+				print("simulate" + simulating);
+				if (simulating) {
+					GameObject[] blocks = GameObject.FindGameObjectsWithTag("Block");
+					foreach (GameObject b in blocks) {
+						b.collider.enabled = true;
+						b.rigidbody.useGravity = true;
+						b.rigidbody.constraints = RigidbodyConstraints.None;
+					}
+					this.GetComponent<shoot>().enabled = true;
+				} else {
+					GameObject[] blocks = GameObject.FindGameObjectsWithTag("Block");
+					foreach (GameObject b in blocks) {
+						b.collider.enabled = false;
+						b.rigidbody.useGravity = false;
+						b.rigidbody.constraints = RigidbodyConstraints.FreezeAll;
+					}
+					this.GetComponent<shoot>().enabled = false;
 				}
 			} else if (input[0] == 'r') {
+				print("reset");
+				simulating = false;
 				GameObject[] blocks = GameObject.FindGameObjectsWithTag("Block");
 				foreach (GameObject b in blocks) {
-					Destroy (b);
+					 b.GetComponent<block>().Remove();
 				}
 			}
 			waitCount = waitDuration;
@@ -101,6 +122,8 @@ public class build : MonoBehaviour {
 		} else if (Input.GetAxis("Mouse ScrollWheel") != 0) {
 			float deltaY = Input.GetAxis("Mouse ScrollWheel");
 			return "s" + (int) (deltaY * mouseScrollScale);
+		} else if (Input.GetMouseButtonDown(1)) {
+			return "b";
 		} else if (Input.touchCount == 1) {
 			initialPinchDistance = -1;
 			if (delayCount >= 0.1f) {
@@ -125,12 +148,12 @@ public class build : MonoBehaviour {
 				initialPinchDistance = currentPinchDistance;
 				pinchMultiplier = 2;
 				return "false";
-			} else if (currentPinchDistance >= initialPinchDistance * pinchMultiplier) {
+			} else if (currentPinchDistance >= initialPinchDistance * pinchMultiplier && initialPinchDistance > 20) {
 				fingerPinchScale = currentPinchDistance / initialPinchDistance - (currentPinchDistance % initialPinchDistance) / initialPinchDistance;
 				fingerPinchScale = 1 / fingerPinchScale;
 				pinchMultiplier = Mathf.Clamp(pinchMultiplier*2, 2.0f, 4.0f);
 				return "p" + fingerPinchScale;
-			} else if (currentPinchDistance <= initialPinchDistance / pinchMultiplier) {
+			} else if (currentPinchDistance <= initialPinchDistance / pinchMultiplier && initialPinchDistance > 20) {
 				fingerPinchScale = initialPinchDistance / currentPinchDistance - (initialPinchDistance % currentPinchDistance) / currentPinchDistance;
 				pinchMultiplier = Mathf.Clamp(pinchMultiplier*2, 2.0f, 4.0f);
 				return "p" + fingerPinchScale;
@@ -147,7 +170,8 @@ public class build : MonoBehaviour {
 			int deltaY = (int) (totalMove / Input.touchCount);
 			return "s" + Mathf.Clamp(deltaY, -1, 1);
 		} else if (Input.touchCount == 4) {
-			return "b";
+			return "false";
+			//return "b";
 		} else if (Input.touchCount == 5) {
 			return "r";
 		} else {
