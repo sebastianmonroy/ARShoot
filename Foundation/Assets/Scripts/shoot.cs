@@ -18,7 +18,7 @@ public class shoot : MonoBehaviour {
 	void Start () {
 		//pinata = GameObject.FindWithTag("pinata");
 		decalIndex = Random.Range(0,decalPrefabs.Length);
-		waitToShoot = 0;
+		waitToShoot = waitDuration;
 	}
 	
 	// Update is called once per frame
@@ -45,12 +45,18 @@ public class shoot : MonoBehaviour {
 			RaycastHit hit = new RaycastHit();
 			if (Input.touchCount > 0) {
 				// Handle tablet touch shooting
-				Ray ray = Camera.main.ScreenPointToRay(Input.touches[0].position);
-				if (Physics.Raycast(ray, out hit)) {
-					if (hit.collider.gameObject.tag == "Pinata") {
-						GameObject decal = Instantiate(decalPrefabs[decalIndex], hit.point, Quaternion.FromToRotation(Vector3.up, hit.normal)) as GameObject;
-						decal.transform.localScale *= Random.Range(1.0f,3.0f);
-						decal.transform.RotateAround(hit.normal, Random.Range(0.0f, 360.0f));
+				if(useBullets) {
+					// use bullets
+					GameObject bullet = Instantiate(bulletPrefab, transform.position, transform.rotation) as GameObject;
+					bullet.rigidbody.velocity = transform.forward * bulletSpeed;
+				} else {
+					Ray ray = Camera.main.ScreenPointToRay(Input.touches[0].position);
+					if (Physics.Raycast(ray, out hit)) {
+						if (hit.collider.gameObject.tag == "Pinata") {
+							GameObject decal = Instantiate(decalPrefabs[decalIndex], hit.point, Quaternion.FromToRotation(Vector3.up, hit.normal)) as GameObject;
+							decal.transform.localScale *= Random.Range(1.0f,3.0f);
+							decal.transform.RotateAround(hit.normal, Random.Range(0.0f, 360.0f));
+						}
 					}
 				}
 			} else if (leftClickDown) {

@@ -123,7 +123,8 @@ public class build : MonoBehaviour {
 			float deltaY = Input.GetAxis("Mouse ScrollWheel");
 			return "s" + (int) (deltaY * mouseScrollScale);
 		} else if (Input.GetMouseButtonDown(1)) {
-			return "b";
+			//return "b";
+			return "false";
 		} else if (Input.touchCount == 1) {
 			initialPinchDistance = -1;
 			if (delayCount >= 0.1f) {
@@ -170,8 +171,20 @@ public class build : MonoBehaviour {
 			int deltaY = (int) (totalMove / Input.touchCount);
 			return "s" + Mathf.Clamp(deltaY, -1, 1);
 		} else if (Input.touchCount == 4) {
+			float minDist = -1;
+			for (int i = 1; i < 4; i++) {
+				float dist = (Input.touches[i-1].position - Input.touches[i].position).magnitude;
+				if (minDist == -1 || dist < minDist) {
+					minDist = dist;
+				}
+			}
+
+			if (minDist > 20) {
+				return "b";
+			} else {
+				return "false";
+			}
 			return "false";
-			//return "b";
 		} else if (Input.touchCount == 5) {
 			return "r";
 		} else {
