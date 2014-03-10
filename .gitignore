@@ -5,3 +5,5 @@
 *.csproj
 *.unityproj
 *.sln
+
+CompilationCompleted.txt
