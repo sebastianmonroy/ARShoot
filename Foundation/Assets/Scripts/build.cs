@@ -91,7 +91,7 @@ public class build : MonoBehaviour {
 						b.rigidbody.useGravity = true;
 						b.rigidbody.constraints = RigidbodyConstraints.None;
 					}
-					this.GetComponent<shoot>().enabled = true;
+					//this.GetComponent<shoot>().enabled = true;
 				} else {
 					GameObject[] blocks = GameObject.FindGameObjectsWithTag("Block");
 					foreach (GameObject b in blocks) {
@@ -99,7 +99,7 @@ public class build : MonoBehaviour {
 						b.rigidbody.useGravity = false;
 						b.rigidbody.constraints = RigidbodyConstraints.FreezeAll;
 					}
-					this.GetComponent<shoot>().enabled = false;
+					//this.GetComponent<shoot>().enabled = false;
 				}
 			} else if (input[0] == 'r') {
 				print("reset");
@@ -184,7 +184,6 @@ public class build : MonoBehaviour {
 			} else {
 				return "false";
 			}
-			return "false";
 		} else if (Input.touchCount == 5) {
 			return "r";
 		} else {
