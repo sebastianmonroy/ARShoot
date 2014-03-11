@@ -26,7 +26,9 @@ public class block : MonoBehaviour {
 		selectedColor = new Color(1.0f, this.renderer.material.color.g, this.renderer.material.color.b, this.renderer.material.color.a);
 		invisibleColor = new Color(this.renderer.material.color.r, this.renderer.material.color.g, this.renderer.material.color.b, 0.5f);
 		this.renderer.material.color = selectedColor;
+	}
 
+	public void Jointify() {
 		List<GameObject> hitBlocks = new List<GameObject>();
 		//hits = Physics.SphereCastAll(this.transform.position, 50, Vector3.up);
 		Vector3[] directions = {Vector3.left, Vector3.right, Vector3.forward, -Vector3.forward, -Vector3.up, Vector3.up};
@@ -195,5 +197,15 @@ public class block : MonoBehaviour {
 
 	public void OnDestroy() {
 
+	}
+
+	public void OnCollisionEnter(Collision collision) {
+		if (collision.gameObject.tag == "Floor" || collision.gameObject.tag == "Tetris") {
+			this.transform.parent.GetComponent<TetrisBlockHandler>().fall = false;
+		} else if (collision.gameObject.tag == "Block") {
+			if (this.transform.parent != collision.gameObject.transform.parent) {
+				this.transform.parent.GetComponent<TetrisBlockHandler>().fall = false;
+			}
+		}
 	}
 }

@@ -3,16 +3,17 @@
 --- !u!78 &1
 TagManager:
   tags:
-  - Pinata
-  - Bullet
-  - Structure
-  - Cube
-  - Trampoline
-  - Ball
-  - Paddle
+  - Floor
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
   - Cell
   - Block
   - Grid
+  - Tetris
   - 
   Builtin Layer 0: Default
   Builtin Layer 1: TransparentFX
