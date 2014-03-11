@@ -29,38 +29,61 @@ public class TetrisSpawnHandler : MonoBehaviour {
 		SpawnWait += Time.deltaTime;
 	}
 
-	public void SpawnT() {
-		Instantiate(TblockPrefab, this.transform.position, this.transform.rotation);
+	public GameObject SpawnRandom() {
+		//Random rand = new Random();
+		switch (Random.Range((int) 0, (int) 4)) {
+			case 0:
+				return SpawnT();
+			case 1:
+				return SpawnL();
+			case 2:
+				return SpawnZ();
+			case 3:
+				return SpawnO();
+			case 4:
+				return SpawnI();
+			default:
+				return null;
+		}
+	}
+
+	public GameObject SpawnT() {
+		GameObject tetris = Instantiate(TblockPrefab, this.transform.position, this.transform.rotation) as GameObject;
 		TCount++;
 		AllCount++;
 		SpawnWait = 0;
+		return tetris;
 	}
 
-	public void SpawnL() {
-		Instantiate(LblockPrefab, this.transform.position, this.transform.rotation);
+	public GameObject SpawnL() {
+		GameObject tetris = Instantiate(LblockPrefab, this.transform.position, this.transform.rotation) as GameObject;
 		LCount++;
 		AllCount++;
 		SpawnWait = 0;
+		return tetris;
 	}
 
-	public void SpawnZ() {
-		Instantiate(ZblockPrefab, this.transform.position, this.transform.rotation);
+	public GameObject SpawnZ() {
+		GameObject tetris = Instantiate(ZblockPrefab, this.transform.position, this.transform.rotation) as GameObject;
 		ZCount++;
 		AllCount++;
 		SpawnWait = 0;
+		return tetris;
 	}
 
-	public void SpawnO() {
-		Instantiate(OblockPrefab, this.transform.position, this.transform.rotation);
+	public GameObject SpawnO() {
+		GameObject tetris = Instantiate(OblockPrefab, this.transform.position, this.transform.rotation) as GameObject;
 		OCount++;
 		AllCount++;
 		SpawnWait = 0;
+		return tetris;
 	}
 
-	public void SpawnI() {
-		Instantiate(IblockPrefab, this.transform.position, this.transform.rotation);
+	public GameObject SpawnI() {
+		GameObject tetris = Instantiate(IblockPrefab, this.transform.position, this.transform.rotation) as GameObject;
 		ICount++;
 		AllCount++;
 		SpawnWait = 0;
+		return tetris;
 	}
 }

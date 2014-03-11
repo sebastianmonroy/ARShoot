@@ -30,6 +30,20 @@ public class GestureHandler : MonoBehaviour {
 			} else {
 				CurrentGesture = Gesture.SCROLL_DOWN;
 			}
+		} else if (Input.GetAxis("Horizontal") != 0) {
+			float deltaX = Input.GetAxis("Horizontal");
+			if (deltaX > 0) {
+				CurrentGesture = Gesture.SCROLL_RIGHT;
+			} else {
+				CurrentGesture = Gesture.SCROLL_LEFT;
+			}
+		} else if (Input.GetAxis("Vertical") != 0) {
+			float deltaX = Input.GetAxis("Vertical");
+			if (deltaX > 0) {
+				CurrentGesture = Gesture.SCROLL_UP;
+			} else {
+				CurrentGesture = Gesture.SCROLL_DOWN;
+			}
 		} else if (Input.touchCount == 1) {
 			delayCount += Time.deltaTime;
 			if (delayCount >= 0.1f) {
