@@ -102,17 +102,21 @@ public class build : MonoBehaviour {
 					//this.GetComponent<shoot>().enabled = false;
 				}
 			} else if (input[0] == 'r') {
-				print("reset");
-				simulating = false;
-				GameObject[] blocks = GameObject.FindGameObjectsWithTag("Block");
-				foreach (GameObject b in blocks) {
-					 b.GetComponent<block>().Remove();
-				}
+				resetGrid();
 			}
 			waitCount = waitDuration;
 		}
 
 		waitCount -= Time.deltaTime;
+	}
+	
+	public void resetGrid(){
+		print("reset");
+		simulating = false;
+		GameObject[] blocks = GameObject.FindGameObjectsWithTag("Block");
+		foreach (GameObject b in blocks) {
+			 b.GetComponent<block>().Remove();
+		}
 	}
 
 	private string getInput() {
