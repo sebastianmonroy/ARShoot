@@ -70,7 +70,7 @@ public class build : MonoBehaviour {
 						waitCount = 0;
 					}
 					break;
-				case default:
+				default:
 					break;
 			}
 		}
