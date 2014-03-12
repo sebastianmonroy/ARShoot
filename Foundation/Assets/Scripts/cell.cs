@@ -2,19 +2,19 @@
 using System.Collections;
 
 public class cell : MonoBehaviour {
-	public GameObject blockPrefab;
-	private bool canSpawn;
+	//public GameObject blockPrefab;
+	//private bool canSpawn;
 
 	void Start() {
 		print("block spawned");
-		canSpawn = true;
+		//canSpawn = true;
 	}
 
 	void Update() {
 		
 	}
 
-	void SpawnBlock() {
+	/*void SpawnBlock() {
 		if (canSpawn) {
 			GameObject block = Instantiate(blockPrefab, this.transform.position, this.transform.rotation) as GameObject;
 			block.transform.parent = GameObject.Find("ImageTarget").transform;
@@ -22,5 +22,5 @@ public class cell : MonoBehaviour {
 			block.transform.position = this.transform.position + new Vector3(0, block.renderer.bounds.size.y/2, 0);
 			//canSpawn = false;
 		}
-	}
+	}*/
 }

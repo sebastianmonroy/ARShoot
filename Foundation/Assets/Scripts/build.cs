@@ -23,6 +23,7 @@ public class build : MonoBehaviour {
 					print("click");
 					RaycastHit hit;
 					if (Physics.Raycast(GestureHandler.CurrentRay, out hit, (1 << 8) | (1 << 9))) {
+						//print("tag = " + hit.transform.gameObject.tag);
 						if (hit.transform.gameObject.tag == "Cell") {
 							// Cell clicked on
 							print("hit cell");

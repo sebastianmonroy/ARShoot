@@ -40,7 +40,7 @@ public class GridHandler : MonoBehaviour {
 
 		for (float i = targetBoundMin.x + cellSize.x/2; i <= targetBoundMax.x - cellSize.x/2; i += cellSize.x) {
 			for (float k = targetBoundMin.z + cellSize.z/2; k <= targetBoundMax.z - cellSize.z/2; k += cellSize.z) {
-				Vector3 cellPosition = this.transform.position + new Vector3(i, 0, k);
+				Vector3 cellPosition = this.transform.position + new Vector3(i, 0, k) - new Vector3(0, cellPrefab.renderer.bounds.size.y/2, 0);
 				GameObject cell = Instantiate(cellPrefab, cellPosition, this.transform.rotation) as GameObject;
 				cell.transform.localScale = new Vector3(cell.transform.localScale.x * currentCellScale, cell.transform.localScale.y, cell.transform.localScale.z * currentCellScale);
 				cell.transform.parent = this.transform;

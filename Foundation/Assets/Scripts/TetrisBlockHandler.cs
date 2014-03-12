@@ -11,32 +11,49 @@ public class TetrisBlockHandler : MonoBehaviour {
 	private GameObject prediction;
 	private Ray debugRay = new Ray();
 	private float debugRayDistance = 0.0f;
-
+	private bool joined;
 	void Start () {
 		fall = true;
-		incrementY = this.transform.Find("1").gameObject.collider.bounds.size.y;
+		joined = false;
+		incrementY = 20;//this.transform.Find("1").gameObject.renderer.bounds.size.y;
 		waitCount = 0;
 		ShowPrediction();
 	}
 	
 	void Update () {
+		if (this.transform.position.y < 0) {
+			Destroy(this.gameObject);
+		}
+
 		if (fall) {
 			if (waitCount >= waitDuration) {
 				this.transform.position = new Vector3(this.transform.position.x, this.transform.position.y - incrementY, this.transform.position.z);
 				// Update Prediction Prefab every time the Tetris moves
 				ShowPrediction();
+				if (Vector3.Distance(this.transform.position, prediction.transform.position) < 20) {
+					this.transform.position = prediction.transform.position;
+					fall = false;
+				}
+
 				waitCount = 0;
 			} else {
 				waitCount += Time.deltaTime;
 			}
 			Debug.DrawRay(debugRay.origin, debugRay.direction * debugRayDistance, Color.red, Time.deltaTime);
-		} else {
-			// Stop predicting when the Tetris stops falling
-			Destroy(prediction);
-			/*foreach (Transform t in this.transform) {
-				t.gameObject.GetComponent<block>.Jointify();
-			}*/
+		} else if (!joined) {
+			Simulate();
+		}	
+	}
+
+	public void Simulate() {
+		// Stop predicting when the Tetris stops falling
+		// Create FixedJoints between the blocks
+		// Unfreeze blocks, make them use gravity
+		Destroy(prediction);
+		foreach (Transform t in this.transform) {
+			t.gameObject.GetComponent<block>().Jointify();
 		}
+		joined = true;
 	}
 
 	public void setX(float posX) {
@@ -72,7 +89,7 @@ public class TetrisBlockHandler : MonoBehaviour {
 	}
 
 	private void ShowPrediction() {
-		print("predict");
+		//print("predict");
 		if (prediction != null) {
 			// Destroy the previous prediction before updating
 			Destroy(prediction);
@@ -80,31 +97,38 @@ public class TetrisBlockHandler : MonoBehaviour {
 
 		RaycastHit hit;
 		RaycastHit bestHit;
-		Physics.Raycast(this.transform.position, Vector3.up, out bestHit);
+		Physics.Raycast(this.transform.position, Vector3.up, out bestHit, 0.1f);
 		Transform bestTransform = this.transform;
 		bool instantiated = false;
 		foreach (Transform t in this.transform) {
 			// Iterate through the blocks in this Tetris and find which will collide first and gather relevant information
-			Ray currentRay = new Ray(t.position, -Vector3.up);
-			if (Physics.Raycast(currentRay, out hit, (1 << 8) | (1 << 9))) {
-				if (hit.transform.gameObject.tag == "Cell" || (hit.transform.gameObject.tag == "Block" && hit.transform.parent.gameObject != this.gameObject)) {
-					if (!instantiated || hit.distance < bestHit.distance) {
-						bestHit = hit;
-						bestTransform = t;
-						debugRay = currentRay;
-						instantiated = true;
-						//bestBlock = t.gameObject;
+			if (t.gameObject.tag == "Block") {
+				Ray currentRay = new Ray(t.position, -Vector3.up);
+				if (Physics.Raycast(currentRay, out hit, (1 << 8) | (1 << 9))) {
+					if (hit.transform.parent.gameObject != this.gameObject) {
+						if (!instantiated || hit.distance < bestHit.distance) {
+							bestHit = hit;
+							bestTransform = t;
+							debugRay = currentRay;
+							instantiated = true;
+							//bestBlock = t.gameObject;
+						}
 					}
 				}
 			}
 		}
 		debugRayDistance = bestHit.distance;
-		print("best: " + bestHit.point.y);
+		//print("best: " + bestHit.point.y);
+		//print("t: " + bestTransform.gameObject.tag);
 
-		// Evaluate how high to spawn the Prediction Prefab
-		float predictionY = this.transform.position.y - bestTransform.gameObject.renderer.bounds.min.y;
 
-		prediction = Instantiate(predictionPrefab, new Vector3(this.transform.position.x, bestHit.point.y + predictionY, this.transform.position.z), this.transform.rotation) as GameObject;
+		if (bestTransform.gameObject.tag == "Block") {
+			// Evaluate how high to spawn the Prediction Prefab
+			float predictionY = this.transform.position.y - bestTransform.gameObject.renderer.bounds.min.y;
+
+			prediction = Instantiate(predictionPrefab, new Vector3(this.transform.position.x, bestHit.point.y + predictionY, this.transform.position.z), this.transform.rotation) as GameObject;
+			prediction.transform.parent = this.transform.parent;
+		}
 	}
 
 	/*void OnCollisionEnter(Collision collision) {

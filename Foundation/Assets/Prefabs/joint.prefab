@@ -62,8 +62,8 @@ FixedJoint:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100000}
   m_ConnectedBody: {fileID: 0}
-  m_BreakForce: 400
-  m_BreakTorque: 400
+  m_BreakForce: 3000
+  m_BreakTorque: 3000
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1

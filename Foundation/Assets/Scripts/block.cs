@@ -40,7 +40,7 @@ public class block : MonoBehaviour {
 				}
 			}
 		}
-		print("# hit blocks" + hitBlocks.Count);
+		//print("# hit blocks " + hitBlocks.Count);
 
 		foreach (GameObject b in hitBlocks) {
 			GameObject jointSource = Instantiate(jointPrefab, this.transform.position, this.transform.rotation) as GameObject;
@@ -70,6 +70,9 @@ public class block : MonoBehaviour {
 			this.AddConnection(b);
 			b.GetComponent<block>().AddConnection(this.gameObject);
 		}
+
+		this.rigidbody.constraints = RigidbodyConstraints.None;
+		this.rigidbody.useGravity = true;
 	}
 
 	public void RemoveConnection(GameObject jointTarget) {
@@ -196,13 +199,13 @@ public class block : MonoBehaviour {
 
 	}
 
-	public void OnCollisionEnter(Collision collision) {
-		if (collision.gameObject.tag == "Floor" || collision.gameObject.tag == "Tetris") {
+	/*public void OnCollisionEnter(Collision collision) {
+		if (collision.gameObject.tag == "Floor") {
 			this.transform.parent.GetComponent<TetrisBlockHandler>().fall = false;
 		} else if (collision.gameObject.tag == "Block") {
 			if (this.transform.parent != collision.gameObject.transform.parent) {
 				this.transform.parent.GetComponent<TetrisBlockHandler>().fall = false;
 			}
 		}
-	}
+	}*/
 }
