@@ -14,6 +14,10 @@ TagManager:
   - Block
   - Grid
   - Tetris
+  - Prediction Block
+  - Prediction Tetris
+  - 
+  - Prediction
   - 
   Builtin Layer 0: Default
   Builtin Layer 1: TransparentFX
@@ -24,8 +28,8 @@ TagManager:
   Builtin Layer 6: 
   Builtin Layer 7: 
   User Layer 8: GridLayer
-  User Layer 9: 
-  User Layer 10: 
+  User Layer 9: BlockLayer
+  User Layer 10: FloorLayer
   User Layer 11: 
   User Layer 12: 
   User Layer 13: 

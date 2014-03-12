@@ -10,6 +10,8 @@ public class TetrisBlockHandler : MonoBehaviour {
 	public GameObject predictionPrefab;
 	//public Material predictionMaterial;
 	private GameObject prediction;
+	private Ray debugRay = new Ray();
+	private float debugRayDistance = 0.0f;
 
 	void Start () {
 		fall = true;
@@ -22,10 +24,12 @@ public class TetrisBlockHandler : MonoBehaviour {
 		if (fall) {
 			if (waitCount >= waitDuration) {
 				this.transform.position = new Vector3(this.transform.position.x, this.transform.position.y - incrementY, this.transform.position.z);
+				ShowPrediction();
 				waitCount = 0;
 			} else {
 				waitCount += Time.deltaTime;
 			}
+			Debug.DrawRay(debugRay.origin, debugRay.direction * debugRayDistance, Color.red, Time.deltaTime);
 		} else {
 			Destroy(prediction);
 		}
@@ -70,19 +74,40 @@ public class TetrisBlockHandler : MonoBehaviour {
 		}
 
 		RaycastHit hit;
-		Vector3 bestHitPoint = -1 * Vector3.one;
+		RaycastHit bestHit;
+		Transform bestTransform = this.transform;
+		Physics.Raycast(this.transform.position, Vector3.up, out bestHit);
+		bool instantiated = false;
+		//GameObject bestBlock;
 		foreach (Transform t in this.transform) {
-			if (Physics.Raycast(t.position, -Vector3.up, out hit)) {
-				if (hit.transform.gameObject.tag == "Cell" || (hit.transform.gameObject.tag == "Block" && hit.transform.parent != this.transform)) {
-					if (bestHitPoint == -1 * Vector3.one || hit.point.y > bestHitPoint.y) {
-						bestHitPoint = hit.point;
+			Ray currentRay = new Ray(t.position, -Vector3.up);
+			if (Physics.Raycast(currentRay, out hit, (1 << 8) | (1 << 9))) {
+				if (hit.transform.gameObject.tag == "Cell" || (hit.transform.gameObject.tag == "Block" && hit.transform.parent.gameObject != this.gameObject)) {
+					if (!instantiated || hit.distance < bestHit.distance) {
+						bestHit = hit;
+						bestTransform = t;
+						debugRay = currentRay;
+						instantiated = true;
+						//bestBlock = t.gameObject;
 					}
 				}
 			}
 		}
-		print("best: " + bestHitPoint.y);
+		debugRayDistance = bestHit.distance;
+		print("best: " + bestHit.point.y);
+
+		float predictionY = this.transform.position.y - bestTransform.gameObject.renderer.bounds.min.y;
+
+		prediction = Instantiate(predictionPrefab, new Vector3(this.transform.position.x, bestHit.point.y + predictionY, this.transform.position.z), this.transform.rotation) as GameObject;
+
+
+
+
+
+
+
 		
-		Transform[] predictionTransforms = new Transform[4];
+		/*Transform[] predictionTransforms = new Transform[4];
 		int j = 0;
 		foreach (Transform t in predictionPrefab.transform) {
 			if (t.gameObject.tag == "Block") {
@@ -105,8 +130,11 @@ public class TetrisBlockHandler : MonoBehaviour {
 			predictionTransforms[i].localPosition = tetrisTransforms[i].transform.localPosition;
 		}
 
-		prediction = Instantiate(predictionPrefab, new Vector3(this.transform.position.x, bestHitPoint.y+/*tetrisTransforms[0].gameObject.renderer.bounds.size.y*/20/2, this.transform.position.z), this.transform.rotation) as GameObject;
-		prediction.transform.localScale = this.transform.localScale;
+		prediction = Instantiate(predictionPrefab, new Vector3(this.transform.position.x, bestHitPoint.y+20/2, this.transform.position.z), this.transform.rotation) as GameObject;
+		prediction.transform.localScale = this.transform.localScale;*/
+
+
+
 
 		/*// Duplicate this GameObject for use as the prediction GameObjectm using bestHitPoint as a reference location for Instantiation
 		prediction = Instantiate(this.gameObject, bestHitPoint + new Vector3(0,this.renderer.bounds.size.y/2,0), this.transform.rotation) as GameObject;
