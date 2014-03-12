@@ -27,8 +27,7 @@ public class build : MonoBehaviour {
 							print("hit cell");
 							if (selectedTetris.GetComponent<TetrisBlockHandler>().fall) {
 								// If there is currently a falling tetris block, move it to be above the selected cell
-								selectedTetris.GetComponent<TetrisBlockHandler>().setX(hit.transform.gameObject.transform.position.x);
-								selectedTetris.GetComponent<TetrisBlockHandler>().setZ(hit.transform.gameObject.transform.position.z);
+								selectedTetris.GetComponent<TetrisBlockHandler>().setXZ(hit.transform.gameObject.transform.position.x, hit.transform.gameObject.transform.position.z);
 							}
 						}
 					}

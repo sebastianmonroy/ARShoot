@@ -6,7 +6,7 @@ public class GridHandler : MonoBehaviour {
 	private Vector3 targetExtents;
 	private Vector3 targetBoundMin;
 	private Vector3 targetBoundMax;
-	public Vector3 cellSize;
+	private Vector3 cellSize;
 	public GameObject cellPrefab;
 	private float currentCellScale;
 	private float originalCellScale = 1;
