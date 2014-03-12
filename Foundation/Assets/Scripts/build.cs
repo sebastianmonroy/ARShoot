@@ -31,11 +31,30 @@ public class build : MonoBehaviour {
 								selectedTetris.GetComponent<TetrisBlockHandler>().setXZ(hit.transform.gameObject.transform.position.x, hit.transform.gameObject.transform.position.z);
 							}
 						} else if (hit.transform.gameObject.tag == "Block") {
+						
+							selectedTetris.AddComponent("Rigidbody");	
+							//Quaternion camRot = GetComponent<Camera>().transform.rotation;
+							Vector3 camRotV3 = (GetComponent<Camera>().transform.position*-1);
+							camRotV3.Normalize();
+							print("force direction: " + camRotV3);
+							selectedTetris.GetComponent<Rigidbody>().AddForce(camRotV3 * 10000);
+							selectedTetris.GetComponent<Rigidbody>().AddForce(Vector3.up * 3000);
+						
+							/*Component[] rigidboodies = GetComponentsInChildren<Rigidbody>();
+							foreach (Rigidbody rb in rigidboodies){
+								rb.useGravity = true;
+							}*/
+							
+							selectedTetris.GetComponent<TetrisBlockHandler>().fall = false;
+						
 							// Block clicked on
 							print("hit block");
+							 
 							if (selectedTetris.GetComponent<TetrisBlockHandler>().fall && hit.transform.parent.gameObject != selectedTetris) {
 								// If there is currently a falling tetris block AND the block clicked on isn't part of the selected tetris, move it to be above the selected block
 								selectedTetris.GetComponent<TetrisBlockHandler>().setXZ(hit.transform.gameObject.transform.position.x, hit.transform.gameObject.transform.position.z);
+							}else if(selectedTetris.GetComponent<TetrisBlockHandler>().fall){//
+								
 							}
 						}
 					}

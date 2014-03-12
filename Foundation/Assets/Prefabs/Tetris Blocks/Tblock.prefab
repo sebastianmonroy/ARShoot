@@ -137,7 +137,6 @@ GameObject:
   - 65: {fileID: 6500000}
   - 23: {fileID: 2300000}
   - 114: {fileID: 11400012}
-  - 54: {fileID: 5400012}
   m_Layer: 9
   m_Name: 3
   m_TagString: Block
@@ -157,7 +156,6 @@ GameObject:
   - 65: {fileID: 6500002}
   - 23: {fileID: 2300002}
   - 114: {fileID: 11400014}
-  - 54: {fileID: 5400014}
   m_Layer: 9
   m_Name: 1
   m_TagString: Block
@@ -177,7 +175,6 @@ GameObject:
   - 65: {fileID: 6500004}
   - 23: {fileID: 2300004}
   - 114: {fileID: 11400016}
-  - 54: {fileID: 5400016}
   m_Layer: 9
   m_Name: 4
   m_TagString: Block
@@ -197,7 +194,6 @@ GameObject:
   - 65: {fileID: 6500006}
   - 23: {fileID: 2300006}
   - 114: {fileID: 11400018}
-  - 54: {fileID: 5400018}
   m_Layer: 9
   m_Name: 2
   m_TagString: Block
@@ -538,66 +534,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!54 &5400012
-Rigidbody:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 100014}
-  serializedVersion: 2
-  m_Mass: 10
-  m_Drag: 0
-  m_AngularDrag: .75
-  m_UseGravity: 0
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 126
-  m_CollisionDetection: 0
---- !u!54 &5400014
-Rigidbody:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 100016}
-  serializedVersion: 2
-  m_Mass: 10
-  m_Drag: 0
-  m_AngularDrag: .75
-  m_UseGravity: 0
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 126
-  m_CollisionDetection: 0
---- !u!54 &5400016
-Rigidbody:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 100018}
-  serializedVersion: 2
-  m_Mass: 10
-  m_Drag: 0
-  m_AngularDrag: .75
-  m_UseGravity: 0
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 126
-  m_CollisionDetection: 0
---- !u!54 &5400018
-Rigidbody:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 100020}
-  serializedVersion: 2
-  m_Mass: 10
-  m_Drag: 0
-  m_AngularDrag: .75
-  m_UseGravity: 0
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 126
-  m_CollisionDetection: 0
 --- !u!64 &6400000
 MeshCollider:
   m_ObjectHideFlags: 1
@@ -797,7 +733,7 @@ FixedJoint:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100000}
-  m_ConnectedBody: {fileID: 5400018}
+  m_ConnectedBody: {fileID: 0}
   m_BreakForce: 400
   m_BreakTorque: 400
 --- !u!138 &13800002
@@ -806,7 +742,7 @@ FixedJoint:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100002}
-  m_ConnectedBody: {fileID: 5400018}
+  m_ConnectedBody: {fileID: 0}
   m_BreakForce: 400
   m_BreakTorque: 400
 --- !u!138 &13800004
@@ -815,7 +751,7 @@ FixedJoint:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100004}
-  m_ConnectedBody: {fileID: 5400016}
+  m_ConnectedBody: {fileID: 0}
   m_BreakForce: 400
   m_BreakTorque: 400
 --- !u!138 &13800006
@@ -824,7 +760,7 @@ FixedJoint:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100006}
-  m_ConnectedBody: {fileID: 5400012}
+  m_ConnectedBody: {fileID: 0}
   m_BreakForce: 400
   m_BreakTorque: 400
 --- !u!138 &13800008
@@ -833,7 +769,7 @@ FixedJoint:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100008}
-  m_ConnectedBody: {fileID: 5400014}
+  m_ConnectedBody: {fileID: 0}
   m_BreakForce: 400
   m_BreakTorque: 400
 --- !u!138 &13800010
@@ -842,7 +778,7 @@ FixedJoint:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100010}
-  m_ConnectedBody: {fileID: 5400018}
+  m_ConnectedBody: {fileID: 0}
   m_BreakForce: 400
   m_BreakTorque: 400
 --- !u!1001 &100100000

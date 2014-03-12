@@ -11,6 +11,7 @@ public class TetrisBlockHandler : MonoBehaviour {
 	private GameObject prediction;
 	private Ray debugRay = new Ray();
 	private float debugRayDistance = 0.0f;
+	public bool joined;
 
 	void Start () {
 		fall = true;
@@ -30,14 +31,21 @@ public class TetrisBlockHandler : MonoBehaviour {
 				waitCount += Time.deltaTime;
 			}
 			Debug.DrawRay(debugRay.origin, debugRay.direction * debugRayDistance, Color.red, Time.deltaTime);
-		} else {
-			// Stop predicting when the Tetris stops falling
-			Destroy(prediction);
-			/*foreach (Transform t in this.transform) {
-				t.gameObject.GetComponent<block>.Jointify();
-			}*/
+		} else if(!joined){
+			Simulate ();
 		}
 	}
+	
+	public void Simulate() {
+       // Stop predicting when the Tetris stops falling
+       // Create FixedJoints between the blocks
+       // Unfreeze blocks, make them use gravity
+       Destroy(prediction);
+       foreach (Transform t in this.transform) {
+               t.gameObject.GetComponent<block>().Jointify();
+       }
+       joined = true;
+   }
 
 	public void setX(float posX) {
 		this.transform.position = new Vector3(Mathf.Clamp(posX, -90, 90), this.transform.position.y, this.transform.position.z);
@@ -99,7 +107,7 @@ public class TetrisBlockHandler : MonoBehaviour {
 			}
 		}
 		debugRayDistance = bestHit.distance;
-		print("best: " + bestHit.point.y);
+		//print("best: " + bestHit.point.y);
 
 		// Evaluate how high to spawn the Prediction Prefab
 		float predictionY = this.transform.position.y - bestTransform.gameObject.renderer.bounds.min.y;
