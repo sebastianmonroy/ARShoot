@@ -8,7 +8,6 @@ public class TetrisBlockHandler : MonoBehaviour {
 	private float incrementY;
 	public bool fall;
 	public GameObject predictionPrefab;
-	//public Material predictionMaterial;
 	private GameObject prediction;
 	private Ray debugRay = new Ray();
 	private float debugRayDistance = 0.0f;
@@ -32,7 +31,11 @@ public class TetrisBlockHandler : MonoBehaviour {
 			}
 			Debug.DrawRay(debugRay.origin, debugRay.direction * debugRayDistance, Color.red, Time.deltaTime);
 		} else {
+			// Stop predicting when the Tetris stops falling
 			Destroy(prediction);
+			/*foreach (Transform t in this.transform) {
+				t.gameObject.GetComponent<block>.Jointify();
+			}*/
 		}
 	}
 

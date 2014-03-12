@@ -32,46 +32,43 @@ public class block : MonoBehaviour {
 		List<GameObject> hitBlocks = new List<GameObject>();
 		//hits = Physics.SphereCastAll(this.transform.position, 50, Vector3.up);
 		Vector3[] directions = {Vector3.left, Vector3.right, Vector3.forward, -Vector3.forward, -Vector3.up, Vector3.up};
-		int layerMask = ~(1 << 8); // exclude grid layer
 		RaycastHit hit;
 		foreach (Vector3 v in directions) {
-			if (Physics.Raycast(this.transform.position, v, out hit, this.renderer.bounds.size.x, layerMask)) {
+			if (Physics.Raycast(this.transform.position, v, out hit, this.renderer.bounds.size.x, 1 << 9)) {
 				if (hit.collider.gameObject.tag == "Block") {
 					hitBlocks.Add(hit.collider.gameObject);
 				}
 			}
 		}
-		print(hitBlocks.Count);
+		print("# hit blocks" + hitBlocks.Count);
 
 		foreach (GameObject b in hitBlocks) {
-			if (b.tag == "Block") {
-				GameObject jointSource = Instantiate(jointPrefab, this.transform.position, this.transform.rotation) as GameObject;
-				jointSource.transform.parent = this.transform;
-				jointSource.name = "joint source";
-				GameObject jointTarget = Instantiate(jointPrefab, b.transform.position, b.transform.rotation) as GameObject;
-				jointTarget.transform.parent = b.transform;
-				//Destroy(jointTarget.GetComponent<SpringJoint>());
-				jointTarget.name = "joint target";
+			GameObject jointSource = Instantiate(jointPrefab, this.transform.position, this.transform.rotation) as GameObject;
+			jointSource.transform.parent = this.transform;
+			jointSource.name = "joint source";
+			GameObject jointTarget = Instantiate(jointPrefab, b.transform.position, b.transform.rotation) as GameObject;
+			jointTarget.transform.parent = b.transform;
+			//Destroy(jointTarget.GetComponent<SpringJoint>());
+			jointTarget.name = "joint target";
 
-				/*SpringJoint springSource = jointSource.GetComponent<SpringJoint>();
-				springSource.maxDistance = 0.8f*(jointSource.transform.position - jointTarget.transform.position).magnitude;
-				springSource.connectedBody = b.rigidbody;
+			/*SpringJoint springSource = jointSource.GetComponent<SpringJoint>();
+			springSource.maxDistance = 0.8f*(jointSource.transform.position - jointTarget.transform.position).magnitude;
+			springSource.connectedBody = b.rigidbody;
 
-				SpringJoint springTarget = jointTarget.GetComponent<SpringJoint>();
-				springTarget.maxDistance = 0.8f*(jointSource.transform.position - jointTarget.transform.position).magnitude;
-				springTarget.connectedBody = this.rigidbody;*/
+			SpringJoint springTarget = jointTarget.GetComponent<SpringJoint>();
+			springTarget.maxDistance = 0.8f*(jointSource.transform.position - jointTarget.transform.position).magnitude;
+			springTarget.connectedBody = this.rigidbody;*/
 
-				FixedJoint springSource = jointSource.GetComponent<FixedJoint>();
-				//springSource.maxDistance = 0.8f*(jointSource.transform.position - jointTarget.transform.position).magnitude;
-				springSource.connectedBody = b.rigidbody;
+			FixedJoint springSource = jointSource.GetComponent<FixedJoint>();
+			//springSource.maxDistance = 0.8f*(jointSource.transform.position - jointTarget.transform.position).magnitude;
+			springSource.connectedBody = b.rigidbody;
 
-				FixedJoint springTarget = jointTarget.GetComponent<FixedJoint>();
-				//springTarget.maxDistance = 0.8f*(jointSource.transform.position - jointTarget.transform.position).magnitude;
-				springTarget.connectedBody = this.rigidbody;
+			FixedJoint springTarget = jointTarget.GetComponent<FixedJoint>();
+			//springTarget.maxDistance = 0.8f*(jointSource.transform.position - jointTarget.transform.position).magnitude;
+			springTarget.connectedBody = this.rigidbody;
 
-				this.AddConnection(b);
-				b.GetComponent<block>().AddConnection(this.gameObject);
-			}
+			this.AddConnection(b);
+			b.GetComponent<block>().AddConnection(this.gameObject);
 		}
 	}
 
