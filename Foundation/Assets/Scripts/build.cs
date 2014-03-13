@@ -75,7 +75,7 @@ public class build : MonoBehaviour {
 					print("scroll down");
 					if (selectedTetris.GetComponent<TetrisBlockHandler>().fall) {
 						// If there is currently a falling tetris block, rotate it accordingly
-						selectedTetris.GetComponent<TetrisBlockHandler>().incrementZRotation(-1);
+						selectedTetris.GetComponent<TetrisBlockHandler>().incrementRotation(selectedTetris.transform.position - this.transform.position);
 						waitCount = 0;
 					}
 					break;
@@ -84,7 +84,7 @@ public class build : MonoBehaviour {
 					print("scroll up");
 					if (selectedTetris.GetComponent<TetrisBlockHandler>().fall) {
 						// If there is currently a falling tetris block, rotate it accordingly
-						selectedTetris.GetComponent<TetrisBlockHandler>().incrementZRotation(1);
+						selectedTetris.GetComponent<TetrisBlockHandler>().incrementRotation(selectedTetris.transform.position - this.transform.position);
 						waitCount = 0;
 					}
 					break;

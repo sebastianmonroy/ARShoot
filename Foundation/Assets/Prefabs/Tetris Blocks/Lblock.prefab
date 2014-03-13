@@ -438,7 +438,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8525b5b5b298d4e4a993dee82e3918a7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  waitDuration: .5
+  waitDuration: .75
   fall: 0
   predictionPrefab: {fileID: 100012, guid: 1d9c41446dfc39f42b1078d3b34928e4, type: 2}
 --- !u!1001 &100100000

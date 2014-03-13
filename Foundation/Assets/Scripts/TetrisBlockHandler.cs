@@ -106,6 +106,14 @@ public class TetrisBlockHandler : MonoBehaviour {
 		ShowPrediction();
 	}
 
+	public void incrementRotation(Vector3 aimDirection) {
+		if (Mathf.Abs(aimDirection.x) >= Mathf.Abs(aimDirection.z)) {
+			incrementZRotation((int) (aimDirection.x/Mathf.Abs(aimDirection.x)));
+		} else {
+			incrementXRotation((int) (aimDirection.z/Mathf.Abs(aimDirection.z)));
+		}
+	}
+
 	private void ShowPrediction() {
 		//print("predict");
 		if (prediction != null) {
