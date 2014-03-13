@@ -21,9 +21,9 @@ public class TetrisBlockHandler : MonoBehaviour {
 	}
 	
 	void Update () {
-		if (this.transform.position.y < 0) {
+		/*if (this.transform.position.y < 0) {
 			Destroy(this.gameObject);
-		}
+		}*/
 
 		if (fall) {
 			if (waitCount >= waitDuration) {
@@ -54,6 +54,24 @@ public class TetrisBlockHandler : MonoBehaviour {
 			t.gameObject.GetComponent<block>().Jointify();
 		}
 		joined = true;
+		fall = false;
+	}
+
+	public void Throw(GameObject throwBlock, Vector3 throwVector) {
+		Destroy(prediction);
+		/*foreach (Transform t in this.transform) {
+			t.gameObject.GetComponent<block>().Jointify();
+		}*/
+
+		foreach (Transform t in this.transform) {
+			t.gameObject.GetComponent<block>().PrepareToThrow();
+			if (t == throwBlock.transform) {
+				t.gameObject.rigidbody.velocity = throwVector;
+			}
+		}
+
+		joined = true;
+		fall = false;
 	}
 
 	public void setX(float posX) {

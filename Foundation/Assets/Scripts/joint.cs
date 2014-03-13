@@ -15,7 +15,7 @@ public class joint : MonoBehaviour {
 
 	void OnJointBreak() {
 		//print("joint break");
-		Destroy(this.gameObject);
-		Destroy(this.transform.parent.gameObject);
+		//Destroy(this.gameObject);
+		//Destroy(this.transform.parent.gameObject);
 	}
 }

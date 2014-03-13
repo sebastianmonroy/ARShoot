@@ -75,6 +75,11 @@ public class block : MonoBehaviour {
 		this.rigidbody.useGravity = true;
 	}
 
+	public void PrepareToThrow() {
+		this.rigidbody.constraints = RigidbodyConstraints.None;
+		this.rigidbody.useGravity = true;
+	}
+
 	public void RemoveConnection(GameObject jointTarget) {
 		foreach (Transform t in this.transform) {
 			if (t.gameObject.GetComponent<FixedJoint>().connectedBody == jointTarget.rigidbody) {
@@ -199,13 +204,14 @@ public class block : MonoBehaviour {
 
 	}
 
-	/*public void OnCollisionEnter(Collision collision) {
-		if (collision.gameObject.tag == "Floor") {
+	public void OnCollisionEnter(Collision collision) {
+		/*if (collision.gameObject.tag == "Floor") {
 			this.transform.parent.GetComponent<TetrisBlockHandler>().fall = false;
 		} else if (collision.gameObject.tag == "Block") {
 			if (this.transform.parent != collision.gameObject.transform.parent) {
 				this.transform.parent.GetComponent<TetrisBlockHandler>().fall = false;
 			}
-		}
-	}*/
+		}*/
+		print(collision.gameObject.tag);
+	}
 }
