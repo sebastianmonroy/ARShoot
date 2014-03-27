@@ -19,13 +19,33 @@ public class LemmingController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+		Ray dRay = new Ray(transform.position, Vector3.down);
+		if(!Physics.Raycast(dRay, 100)){
+			oppositeDirection();
+		}
 		transform.position = new Vector3(transform.position.x + direction.x*speed, transform.position.y + direction.y*speed, transform.position.z + direction.z*speed);
+		
+		
 		
 		//change action
 		if(actionTimer % actionInterval == 0){
 			changeAction ("random");
 		}
 		actionTimer++;
+	}
+	//collision
+	void OnCollisionEnter(Collision collision) {
+		
+		//hit a block
+        if(collision.gameObject.tag == "Block"){
+			oppositeDirection();
+		}
+    }
+	
+	void oppositeDirection(){
+		direction.x = -direction.x;
+		direction.y = -direction.y;
+		direction.z = -direction.z;
 	}
 	
 	//change to an action, default is a random one
@@ -53,7 +73,7 @@ public class LemmingController : MonoBehaviour {
 			direction = Vector3.left;
 			return "left";
 			break;
-		case "up":
+		case "forward":
 			direction = Vector3.forward;
 			return "forward";
 			break;
@@ -61,9 +81,17 @@ public class LemmingController : MonoBehaviour {
 			direction = Vector3.right;
 			return "right";
 			break;
-		case "down":
+		case "back":
 			direction = Vector3.back;
 			return "back";
+			break;
+		case "up":
+			direction = Vector3.up;
+			return "up";
+			break;
+		case "down":
+			direction = Vector3.down;
+			return "down";
 			break;
 		}
 		return "failed";

@@ -212,6 +212,6 @@ public class block : MonoBehaviour {
 				this.transform.parent.GetComponent<TetrisBlockHandler>().fall = false;
 			}
 		}*/
-		print(collision.gameObject.tag);
+		//print(collision.gameObject.tag);
 	}
 }

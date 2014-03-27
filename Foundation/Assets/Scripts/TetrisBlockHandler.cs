@@ -15,7 +15,7 @@ public class TetrisBlockHandler : MonoBehaviour {
 	void Start () {
 		fall = true;
 		joined = false;
-		incrementY = 20;//this.transform.Find("1").gameObject.renderer.bounds.size.y;
+		incrementY = 40;//this.transform.Find("1").gameObject.renderer.bounds.size.y;
 		waitCount = 0;
 		ShowPrediction();
 	}
