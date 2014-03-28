@@ -51,7 +51,7 @@ public class TetrisBlockHandler : MonoBehaviour {
 		// Unfreeze blocks, make them use gravity
 		Destroy(prediction);
 		foreach (Transform t in this.transform) {
-			t.gameObject.GetComponent<block>().Jointify();
+			//t.gameObject.GetComponent<block>().Jointify();
 		}
 		joined = true;
 		fall = false;

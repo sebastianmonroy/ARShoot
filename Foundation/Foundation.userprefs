@@ -1,6 +1,15 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace />
-  <MonoDevelop.Ide.Workbench />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\LemmingController.cs">
+    <Files>
+      <File FileName="Assets\Scripts\LemmingController.cs" Line="34" Column="27" />
+      <File FileName="Assets\Scripts\TetrisBlockHandler.cs" Line="58" Column="3" />
+      <File FileName="Assets\Scripts\block.cs" Line="31" Column="22" />
+      <File FileName="Assets\Scripts\GameHandler.cs" Line="22" Column="1" />
+      <File FileName="Assets\Scripts\GestureHandler.cs" Line="1" Column="19" />
+      <File FileName="Assets\Scripts\build.cs" Line="49" Column="8" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore />
   </MonoDevelop.Ide.DebuggingService.Breakpoints>

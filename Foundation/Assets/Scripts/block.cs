@@ -199,6 +199,14 @@ public class block : MonoBehaviour {
 			Destroy(this.gameObject);
 		}
 	}
+	
+	public bool hasBlockAbove(){
+		Ray r = new Ray(transform.position, Vector3.up);
+		if(Physics.Raycast(r, transform.lossyScale.y/5)){
+			return true;
+		}
+		return false;
+	}
 
 	public void OnDestroy() {
 

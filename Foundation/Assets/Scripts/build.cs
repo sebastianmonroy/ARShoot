@@ -33,21 +33,19 @@ public class build : MonoBehaviour {
 							}
 						} else if (hit.transform.gameObject.tag == "Block") {
 							// Block clicked on
-							print("hit block");
+							/*print("hit block");
 							 
-							//if (selectedTetris.GetComponent<TetrisBlockHandler>().fall) {
-								if (selectedTetris.GetComponent<TetrisBlockHandler>().fall && hit.transform.parent.gameObject != selectedTetris) {
-									// If there is currently a falling tetris block AND the block clicked on isn't part of the selected tetris, move it to be above the selected block
-									selectedTetris.GetComponent<TetrisBlockHandler>().setXZ(hit.transform.gameObject.transform.position.x, hit.transform.gameObject.transform.position.z);
-								} else if (hit.transform.parent.gameObject == selectedTetris) {
-									// If there is currently a falling tetris block ANND the block clicked IS part of the selected tetris, push it
-									Vector3 camRotV3 = GestureHandler.CurrentRay.direction.normalized;
-									print("force direction: " + camRotV3);
-									selectedTetris.GetComponent<TetrisBlockHandler>().Throw(hit.transform.gameObject, camRotV3 * 3000);
-									//selectedTetris.GetComponent<Rigidbody>().AddForce(Vector3.up * 30000);
-								}
+							if (selectedTetris.GetComponent<TetrisBlockHandler>().fall && hit.transform.parent.gameObject != selectedTetris) {
+								// If there is currently a falling tetris block AND the block clicked on isn't part of the selected tetris, move it to be above the selected block
+								selectedTetris.GetComponent<TetrisBlockHandler>().setXZ(hit.transform.gameObject.transform.position.x, hit.transform.gameObject.transform.position.z);
+							} else if (hit.transform.parent.gameObject == selectedTetris) {
+								// If there is currently a falling tetris block ANND the block clicked IS part of the selected tetris, push it
+								Vector3 camRotV3 = GestureHandler.CurrentRay.direction.normalized;
+								print("force direction: " + camRotV3);
+								selectedTetris.GetComponent<TetrisBlockHandler>().Throw(hit.transform.gameObject, camRotV3 * 3000);
+								//selectedTetris.GetComponent<Rigidbody>().AddForce(Vector3.up * 30000);
+							}*/
 			
-							//}
 						}
 					}
 					waitCount = 0;
