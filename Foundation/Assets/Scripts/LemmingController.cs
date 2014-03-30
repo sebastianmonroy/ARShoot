@@ -4,7 +4,10 @@ using System.Collections;
 public class LemmingController : MonoBehaviour {
 	public float speed = 1;
 	//enum directions {left, up, right, down};
+	private string action;
 	private Vector3 direction;
+	private bool isClimbing;
+	private block climbTarget;
 
 	
 	public float actionInterval = 30;//interval between changing directions
@@ -14,30 +17,49 @@ public class LemmingController : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+		action = "stand";
+		isClimbing = false;
+		climbTarget = null;
 		direction = Vector3.forward;
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		Ray downRay = new Ray(transform.position, Vector3.down);//check to see if there is anything below to stand on
-		if(!Physics.Raycast(downRay, 20)){
-			oppositeDirection();
-		}
-		transform.position = new Vector3(transform.position.x + direction.x*speed, transform.position.y + direction.y*speed, transform.position.z + direction.z*speed);
-		
-		
-		RaycastHit hit;
-		Ray directionRay = new Ray(transform.position, direction);//check to see if we're about to hit a wall
-		if(Physics.Raycast(directionRay,out hit, 20)){//did we see something
-			Transform t = hit.transform;
-			block b = t.GetComponent<block>();
-			if(!b.hasBlockAbove()){
-				print("moving up");
-				moveUpToBlock(b);
+		Ray downRay = new Ray(transform.position, Vector3.down);
+		if(!Physics.Raycast(downRay, 15) && !isClimbing){
+			//don't move
+			direction = Vector3.down;
+			print ("FALLING");
+		}else{//work normally
+			
+			standUpStright();
+			lookDownTurnAround();
+			moveForward();
+			
+			
+			if(climbTarget != null){
+				moveUpToBlock(climbTarget);
+			}else{
+				RaycastHit hit;
+				Ray directionRay = new Ray(transform.position, direction);//check to see if we're about to hit a wall
+				if(Physics.Raycast(directionRay,out hit, 20)){//did we see something
+					Transform t = hit.transform;
+					if(t.tag == "Block"){//make sure we're hitting a block
+						block b = t.GetComponent<block>();
+						if(!b.hasBlockAbove()){
+							climbTarget = b;
+							isClimbing = true;
+						}
+					}
+				}
 			}
 		}
+
 		
-		standUpStright();
+		
+		
+		
+		
 		//change action
 		if(actionTimer % actionInterval == 0){
 			changeAction ("random");
@@ -58,9 +80,31 @@ public class LemmingController : MonoBehaviour {
 			}
 		}
     }*/
-	
+	void moveForward(){
+		transform.position = new Vector3(transform.position.x + direction.x*speed, transform.position.y + direction.y*speed, transform.position.z + direction.z*speed);
+	}
 	void moveUpToBlock(block b){
-		transform.position = new Vector3(b.transform.position.x, b.transform.position.y+22, b.transform.position.z);
+		float targetY = b.transform.position.y + this.transform.lossyScale.y + 10;
+		Rigidbody g = this.transform.GetComponent<Rigidbody>();
+		
+		if(this.transform.position.y < targetY){
+			transform.position = new Vector3(this.transform.position.x, this.transform.position.y+10, this.transform.position.z);
+			direction = Vector3.up;
+			isClimbing = true;
+			g.useGravity = false;
+		}else{
+			transform.position = new Vector3(b.transform.position.x, targetY, b.transform.position.z);
+			isClimbing = false;
+			climbTarget = null;
+			g.useGravity = true;
+		}
+	}
+	
+	void lookDownTurnAround(){//turn around if no floor in front
+		Ray forwardDown = new Ray(transform.position, Vector3.down + (direction*0.2f));//check to see if there is a floor in front
+		if(!Physics.Raycast(forwardDown, 30)){
+			oppositeDirection();
+		}
 	}
 	
 	void oppositeDirection(){

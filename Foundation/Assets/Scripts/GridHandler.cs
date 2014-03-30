@@ -45,7 +45,7 @@ public class GridHandler : MonoBehaviour {
 				cell.transform.localScale = new Vector3(cell.transform.localScale.x * currentCellScale, cell.transform.localScale.y, cell.transform.localScale.z * currentCellScale);
 				cell.transform.parent = this.transform;
 				
-				print(cellPosition);
+				//print(cellPosition);
 				//break;
 			}
 			//break;

@@ -15,6 +15,8 @@ public class TetrisSpawnHandler : MonoBehaviour {
 	public static float ICount;
 	public static float AllCount;
 	
+	private Vector3 spawnPosition;
+	
 	void Start () {
 		SpawnWait = 5;
 		TCount = 0;
@@ -23,13 +25,21 @@ public class TetrisSpawnHandler : MonoBehaviour {
 		OCount = 0;
 		ICount = 0;
 		AllCount = 0;
+		
+		spawnPosition = new Vector3(this.transform.position.x, this.transform.position.y, this.transform.position.z);
 	}
 	
 	void Update () {
 		SpawnWait += Time.deltaTime;
 	}
+		
+	
 
 	public GameObject SpawnRandom() {
+		float randX = Random.Range(-100, 100);
+		float randZ = Random.Range(-100, 100);
+		spawnPosition = new Vector3(randX, this.transform.position.y, randZ);
+		
 		//Random rand = new Random();
 		switch (Random.Range((int) 0, (int) 4)) {
 			case 0:
@@ -80,13 +90,13 @@ public class TetrisSpawnHandler : MonoBehaviour {
 			}
 		}
 
-		newTetris.transform.position += new Vector3(0, (this.transform.position.y - bestTransform.gameObject.renderer.bounds.min.y), 0);
+		newTetris.transform.position += new Vector3(0, (spawnPosition.y - bestTransform.gameObject.renderer.bounds.min.y), 0);
 
 		return newTetris;
 	}
 
 	public GameObject SpawnT() {
-		GameObject tetris = Instantiate(TblockPrefab, this.transform.position, this.transform.rotation) as GameObject;
+		GameObject tetris = Instantiate(TblockPrefab, spawnPosition, this.transform.rotation) as GameObject;
 		tetris.transform.parent = this.transform;
 		TCount++;
 		AllCount++;
@@ -95,7 +105,7 @@ public class TetrisSpawnHandler : MonoBehaviour {
 	}
 
 	public GameObject SpawnL() {
-		GameObject tetris = Instantiate(LblockPrefab, this.transform.position, this.transform.rotation) as GameObject;
+		GameObject tetris = Instantiate(LblockPrefab, spawnPosition, this.transform.rotation) as GameObject;
 		tetris.transform.parent = this.transform;
 		LCount++;
 		AllCount++;
@@ -104,7 +114,7 @@ public class TetrisSpawnHandler : MonoBehaviour {
 	}
 
 	public GameObject SpawnZ() {
-		GameObject tetris = Instantiate(ZblockPrefab, this.transform.position, this.transform.rotation) as GameObject;
+		GameObject tetris = Instantiate(ZblockPrefab, spawnPosition, this.transform.rotation) as GameObject;
 		tetris.transform.parent = this.transform;
 		ZCount++;
 		AllCount++;
@@ -113,7 +123,7 @@ public class TetrisSpawnHandler : MonoBehaviour {
 	}
 
 	public GameObject SpawnO() {
-		GameObject tetris = Instantiate(OblockPrefab, this.transform.position, this.transform.rotation) as GameObject;
+		GameObject tetris = Instantiate(OblockPrefab, spawnPosition, this.transform.rotation) as GameObject;
 		tetris.transform.parent = this.transform;
 		OCount++;
 		AllCount++;
@@ -122,7 +132,7 @@ public class TetrisSpawnHandler : MonoBehaviour {
 	}
 
 	public GameObject SpawnI() {
-		GameObject tetris = Instantiate(IblockPrefab, this.transform.position, this.transform.rotation) as GameObject;
+		GameObject tetris = Instantiate(IblockPrefab, spawnPosition, this.transform.rotation) as GameObject;
 		tetris.transform.parent = this.transform;
 		ICount++;
 		AllCount++;

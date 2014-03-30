@@ -20,13 +20,13 @@ public class build : MonoBehaviour {
 				// Handles performing certain "build" actions based on the user input detected in GestureHandler.cs
 				case Gesture.CLICK:
 					// CLICK gesture detected
-					print("click");
+					//print("click");
 					RaycastHit hit;
 					if (Physics.Raycast(GestureHandler.CurrentRay, out hit, (1 << 8) | (1 << 9))) {
 						//print("tag = " + hit.transform.gameObject.tag);
 						if (hit.transform.gameObject.tag == "Cell") {
 							// Cell clicked on
-							print("hit cell");
+							//print("hit cell");
 							if (selectedTetris.GetComponent<TetrisBlockHandler>().fall) {
 								// If there is currently a falling tetris block, move it to be above the selected cell
 								selectedTetris.GetComponent<TetrisBlockHandler>().setXZ(hit.transform.gameObject.transform.position.x, hit.transform.gameObject.transform.position.z);
