@@ -201,8 +201,9 @@ public class block : MonoBehaviour {
 	}
 	
 	public bool hasBlockAbove(){
+		RaycastHit hit;
 		Ray r = new Ray(transform.position, Vector3.up);
-		if(Physics.Raycast(r, transform.lossyScale.y/5)){
+		if(Physics.Raycast(r, transform.localScale.y)){
 			return true;
 		}
 		return false;

@@ -8,7 +8,6 @@ public class LemmingController : MonoBehaviour {
 	private Vector3 direction;
 	private bool isClimbing;
 	private block climbTarget;
-
 	
 	public float actionInterval = 30;//interval between changing directions
 	private float actionTimer = 0;
@@ -34,12 +33,14 @@ public class LemmingController : MonoBehaviour {
 			
 			standUpStright();
 			lookDownTurnAround();
-			moveForward();
+			
 			
 			
 			if(climbTarget != null){
 				moveUpToBlock(climbTarget);
 			}else{
+				moveForward();
+				
 				RaycastHit hit;
 				Ray directionRay = new Ray(transform.position, direction);//check to see if we're about to hit a wall
 				if(Physics.Raycast(directionRay,out hit, 20)){//did we see something
@@ -86,18 +87,30 @@ public class LemmingController : MonoBehaviour {
 	void moveUpToBlock(block b){
 		float targetY = b.transform.position.y + this.transform.lossyScale.y + 10;
 		Rigidbody g = this.transform.GetComponent<Rigidbody>();
+		GameObject blockObject = b.gameObject;
+		MeshRenderer renderer = blockObject.GetComponent<MeshRenderer>();
+		
 		
 		if(this.transform.position.y < targetY){
-			transform.position = new Vector3(this.transform.position.x, this.transform.position.y+10, this.transform.position.z);
-			direction = Vector3.up;
+			//transform.position = new Vector3(this.transform.position.x, this.transform.position.y+10, this.transform.position.z);
+			transform.position = new Vector3(transform.position.x, transform.position.y + speed, transform.position.z );
 			isClimbing = true;
-			g.useGravity = false;
+			//g.useGravity = false;
+			renderer.material.color = new Color(0,255,0);
+			
+			if(g!=null){
+				Destroy (g);
+			}
 		}else{
 			transform.position = new Vector3(b.transform.position.x, targetY, b.transform.position.z);
 			isClimbing = false;
 			climbTarget = null;
-			g.useGravity = true;
+			//g.useGravity = true;
+			renderer.material.color = new Color(0,0,0);
+
+			this.gameObject.AddComponent<Rigidbody>();
 		}
+		
 	}
 	
 	void lookDownTurnAround(){//turn around if no floor in front
