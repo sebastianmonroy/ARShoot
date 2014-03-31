@@ -91,7 +91,7 @@ public class TetriminoHandler : MonoBehaviour {
 			}
 		} else if (dir == Vector3.right) {
 			foreach (Transform t in this.transform) {
-				print(t.position + " " + (t.position.y == centerPosition.y) + " " + (t.position.z == centerPosition.z) + " " + (t.position.x < centerPosition.x));
+				//print(t.position + " " + (t.position.y == centerPosition.y) + " " + (t.position.z == centerPosition.z) + " " + (t.position.x < centerPosition.x));
 				if (isClose(t.position.y, centerPosition.y) && isClose(t.position.z, centerPosition.z) && t.position.x < centerPosition.x) {
 					float temp = Mathf.Abs(centerPosition.x - t.position.x);
 					if (temp > offset)	offset = temp;

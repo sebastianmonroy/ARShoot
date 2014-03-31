@@ -52,21 +52,24 @@ public class build : MonoBehaviour {
 							if (selectedTetris.active) {
 								selectedTetris.active = false;
 							}
+							waitCount = waitDuration;
 						} else if (hit.transform.gameObject.tag == "Preview") {
 							// show tetris prediction when preview block is touched
 							selectedPreviewBlock = hit.transform.gameObject;
 							selectedTetris.active = true;
 							correctPreview();
+							waitCount = 0;
 						} else if (hit.transform.gameObject.tag == "Prediction") {
 							// create tetrimino where the prediction is (if not colliding)
 							if (!selectedTetris.GetComponent<TetriminoHandler>().isColliding) {
 								selectedTetris.GetComponent<TetriminoHandler>().setPreview(false);
 								selectedBlock.GetComponent<block>().destroyPreview();
 								getNextTetris();
+								waitCount = 0;
 							}
 						}
 					}
-					waitCount = 0;
+					
 					break;
 				case Gesture.SCROLL_LEFT:
 					// SCROLL_LEFT gesture detected

@@ -26,9 +26,11 @@ public class block : MonoBehaviour {
 	public bool hasBlockAbove(){
 		RaycastHit hit;
 		Ray r = new Ray(transform.position, Vector3.up);
-		Physics.Raycast(r, out hit, GameHandler.BLOCK_SIZE);
-		if(hit.transform.gameObject.tag == "Block"){
-			return true;
+		
+		if (Physics.Raycast(r, out hit, GameHandler.BLOCK_SIZE)) {
+			if (hit.transform.gameObject.tag == "Block") {
+				return true;
+			}
 		}
 		return false;
 	}
@@ -88,7 +90,7 @@ public class block : MonoBehaviour {
 		foreach (GameObject b in blocks) {
 			if (b != this.gameObject) {
 				if (this.collider.bounds.Intersects(b.collider.bounds)) {
-					print("collision with " + b.gameObject.name);
+					//print("collision with " + b.gameObject.name);
 					return true;
 				}
 			}
@@ -98,7 +100,7 @@ public class block : MonoBehaviour {
 	}
 
 	void OnCollisionEnter(Collision collision) {
-		print("collision with " + collision.gameObject.tag);
+		//print("collision with " + collision.gameObject.tag);
 		if (collision.gameObject.tag == "Block") {
 			//collisionObjects.Add(collision.gameObject);
 			colliding = true;
@@ -106,7 +108,7 @@ public class block : MonoBehaviour {
 	}
 
 	void OnCollisionStay(Collision collision) {
-		print("collision with " + collision.gameObject.tag);
+		//print("collision with " + collision.gameObject.tag);
 		if (!colliding && collision.gameObject.tag == "Block") {
 			colliding = true;
 		}

@@ -19,6 +19,11 @@ TagManager:
   - 
   - 
   - 
+  - Prediction Tetris
+  - Grid
+  - Prediction
+  - Lemming
+  - 
   Builtin Layer 0: Default
   Builtin Layer 1: TransparentFX
   Builtin Layer 2: Ignore Raycast

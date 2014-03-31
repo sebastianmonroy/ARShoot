@@ -25,12 +25,13 @@ public class LemmingController : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		Ray downRay = new Ray(transform.position, Vector3.down);
-		if(!Physics.Raycast(downRay, 15) && !isClimbing){
+		if(!Physics.Raycast(downRay, GameHandler.BLOCK_SIZE) && !isClimbing){
 			//don't move
 			direction = Vector3.down;
-			print ("FALLING");
+			this.GetComponent<Rigidbody>().useGravity = true;
+			//print ("FALLING");
 		}else{//work normally
-			
+			this.GetComponent<Rigidbody>().useGravity = false;
 			standUpStright();
 			lookDownTurnAround();
 			
@@ -38,18 +39,23 @@ public class LemmingController : MonoBehaviour {
 			
 			if(climbTarget != null){
 				moveUpToBlock(climbTarget);
-			}else{
+				RaycastHit hit;
+				if (!isClimbing) {
+					if (Vector3.Distance(climbTarget.gameObject.transform.position, this.transform.position) < this.transform.lossyScale.y) {
+						isClimbing = true;
+					}
+				}
+			} else {
 				moveForward();
 				
 				RaycastHit hit;
 				Ray directionRay = new Ray(transform.position, direction);//check to see if we're about to hit a wall
-				if(Physics.Raycast(directionRay,out hit, 20)){//did we see something
+				if(Physics.Raycast(directionRay, out hit, 4 * this.transform.lossyScale.y)){//did we see something
 					Transform t = hit.transform;
 					if(t.tag == "Block"){//make sure we're hitting a block
 						block b = t.GetComponent<block>();
 						if(!b.hasBlockAbove()){
 							climbTarget = b;
-							isClimbing = true;
 						}
 					}
 				}
@@ -84,31 +90,40 @@ public class LemmingController : MonoBehaviour {
 	void moveForward(){
 		transform.position = new Vector3(transform.position.x + direction.x*speed, transform.position.y + direction.y*speed, transform.position.z + direction.z*speed);
 	}
+
+
 	void moveUpToBlock(block b){
-		float targetY = b.transform.position.y + this.transform.lossyScale.y + 10;
+		float targetY = b.collider.bounds.max.y + this.transform.lossyScale.y/2;
 		Rigidbody g = this.transform.GetComponent<Rigidbody>();
 		GameObject blockObject = b.gameObject;
 		MeshRenderer renderer = blockObject.GetComponent<MeshRenderer>();
 		
 		
-		if(this.transform.position.y < targetY){
+		if(isClimbing){
+			print("climbing");
+
 			//transform.position = new Vector3(this.transform.position.x, this.transform.position.y+10, this.transform.position.z);
-			transform.position = new Vector3(transform.position.x, transform.position.y + speed, transform.position.z );
-			isClimbing = true;
+			transform.position = new Vector3(transform.position.x, transform.position.y + speed, transform.position.z);
+			
 			//g.useGravity = false;
 			renderer.material.color = new Color(0,255,0);
 			
-			if(g!=null){
+			/*if(g!=null){
 				Destroy (g);
+			}*/
+
+			if (this.transform.position.y > targetY) {
+				isClimbing = false;
 			}
-		}else{
-			transform.position = new Vector3(b.transform.position.x, targetY, b.transform.position.z);
+		} else {
+			print("climbed");
+			transform.position = this.transform.position + new Vector3(direction.x * this.transform.lossyScale.x, direction.y * this.transform.lossyScale.y, direction.z * this.transform.lossyScale.z);
 			isClimbing = false;
 			climbTarget = null;
 			//g.useGravity = true;
 			renderer.material.color = new Color(0,0,0);
 
-			this.gameObject.AddComponent<Rigidbody>();
+			//this.gameObject.AddComponent<Rigidbody>();
 		}
 		
 	}
@@ -136,49 +151,39 @@ public class LemmingController : MonoBehaviour {
 	//change to an action, default is a random one
 	string changeAction(string a = "random"){
 		switch(a){
-		case "random"://pick a random action
-			int r = Random.Range(0,4);
-			switch(r){
-			case 0:
-				return changeAction("left");
+			case "random"://pick a random action
+				int r = Random.Range(0,4);
+				switch(r){
+					case 0:
+						return changeAction("left");				
+					case 1:
+						return changeAction("forward");				
+					case 2:
+						return changeAction("right");				
+					case 3:
+						return changeAction("back");				
+				}
 				break;
-			case 1:
-				return changeAction("forward");
-				break;
-			case 2:
-				return changeAction("right");
-				break;
-			case 3:
-				return changeAction("back");
-				break;
-			}
-			
-			break;
-		case "left":
-			direction = Vector3.left;
-			return "left";
-			break;
-		case "forward":
-			direction = Vector3.forward;
-			return "forward";
-			break;
-		case "right":
-			direction = Vector3.right;
-			return "right";
-			break;
-		case "back":
-			direction = Vector3.back;
-			return "back";
-			break;
-		case "up":
-			direction = Vector3.up;
-			return "up";
-			break;
-		case "down":
-			direction = Vector3.down;
-			return "down";
-			break;
+			case "left":
+				direction = Vector3.left;
+				return "left";			
+			case "forward":
+				direction = Vector3.forward;
+				return "forward";			
+			case "right":
+				direction = Vector3.right;
+				return "right";			
+			case "back":
+				direction = Vector3.back;
+				return "back";			
+			case "up":
+				direction = Vector3.up;
+				return "up";			
+			case "down":
+				direction = Vector3.down;
+				return "down";			
 		}
+
 		return "failed";
 	}
 }

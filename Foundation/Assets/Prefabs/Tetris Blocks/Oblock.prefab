@@ -273,7 +273,7 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: .800000012, y: .800000012, z: .800000012}
+  m_Size: {x: .99000001, y: .99000001, z: .99000001}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!65 &6500002
 BoxCollider:
@@ -285,7 +285,7 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: .800000012, y: .800000012, z: .800000012}
+  m_Size: {x: .99000001, y: .99000001, z: .99000001}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!65 &6500004
 BoxCollider:
@@ -297,7 +297,7 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: .800000012, y: .800000012, z: .800000012}
+  m_Size: {x: .99000001, y: .99000001, z: .99000001}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!65 &6500006
 BoxCollider:
@@ -309,7 +309,7 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: .800000012, y: .800000012, z: .800000012}
+  m_Size: {x: .99000001, y: .99000001, z: .99000001}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &11400012
 MonoBehaviour:
@@ -324,6 +324,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   BlockPreviewPrefab: {fileID: 100000, guid: 72c0f70a61ea8de46b0cf3966ca93920, type: 2}
   colliding: 0
+  outOfBounds: 0
 --- !u!114 &11400014
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -337,6 +338,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   BlockPreviewPrefab: {fileID: 100000, guid: 72c0f70a61ea8de46b0cf3966ca93920, type: 2}
   colliding: 0
+  outOfBounds: 0
 --- !u!114 &11400016
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -350,6 +352,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   BlockPreviewPrefab: {fileID: 100000, guid: 72c0f70a61ea8de46b0cf3966ca93920, type: 2}
   colliding: 0
+  outOfBounds: 0
 --- !u!114 &11400018
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -363,6 +366,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   BlockPreviewPrefab: {fileID: 100000, guid: 72c0f70a61ea8de46b0cf3966ca93920, type: 2}
   colliding: 0
+  outOfBounds: 0
 --- !u!114 &11400024
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -376,6 +380,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isPreview: 0
   isColliding: 0
+  isOutOfBounds: 0
   predictionGoodMaterial: {fileID: 2100000, guid: 7bef2b048399cea448ce2ad3870ad89a,
     type: 2}
   predictionBadMaterial: {fileID: 2100000, guid: 6f84d81fc2081b845aedd8215fb561bc,
