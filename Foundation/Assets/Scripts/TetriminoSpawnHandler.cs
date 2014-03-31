@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class TetrisSpawnHandler : MonoBehaviour {
+public class TetriminoSpawnHandler : MonoBehaviour {
 	public GameObject TblockPrefab;
 	public GameObject LblockPrefab;
 	public GameObject ZblockPrefab;
@@ -33,14 +33,28 @@ public class TetrisSpawnHandler : MonoBehaviour {
 		SpawnWait += Time.deltaTime;
 	}
 		
+	public GameObject getRandom() {
+		switch (Random.Range((int) 0, (int) 4)) {
+			case 0:
+				return TblockPrefab;
+			case 1:
+				return LblockPrefab;
+			case 2:
+				return ZblockPrefab;
+			case 3:
+				return OblockPrefab;
+			case 4:
+				return IblockPrefab;
+			default:
+				return null;
+		}
+	}
 	
-
 	public GameObject SpawnRandom() {
 		float randX = Random.Range(-100, 100);
 		float randZ = Random.Range(-100, 100);
 		spawnPosition = new Vector3(randX, this.transform.position.y, randZ);
 		
-		//Random rand = new Random();
 		switch (Random.Range((int) 0, (int) 4)) {
 			case 0:
 				return Spawn(0);

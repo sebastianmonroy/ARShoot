@@ -12,12 +12,12 @@ TagManager:
   - 
   - Cell
   - Block
-  - Grid
+  - Preview
   - Tetris
-  - Prediction Block
-  - Prediction Tetris
   - 
-  - Prediction
+  - 
+  - 
+  - 
   - 
   Builtin Layer 0: Default
   Builtin Layer 1: TransparentFX

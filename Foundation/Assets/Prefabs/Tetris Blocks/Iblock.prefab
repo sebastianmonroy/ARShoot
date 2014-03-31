@@ -28,7 +28,6 @@ GameObject:
   - 65: {fileID: 6500000}
   - 23: {fileID: 2300000}
   - 114: {fileID: 11400012}
-  - 54: {fileID: 5400012}
   m_Layer: 9
   m_Name: 3
   m_TagString: Block
@@ -48,7 +47,6 @@ GameObject:
   - 65: {fileID: 6500002}
   - 23: {fileID: 2300002}
   - 114: {fileID: 11400014}
-  - 54: {fileID: 5400014}
   m_Layer: 9
   m_Name: 1
   m_TagString: Block
@@ -68,7 +66,6 @@ GameObject:
   - 65: {fileID: 6500004}
   - 23: {fileID: 2300004}
   - 114: {fileID: 11400016}
-  - 54: {fileID: 5400016}
   m_Layer: 9
   m_Name: 4
   m_TagString: Block
@@ -88,7 +85,6 @@ GameObject:
   - 65: {fileID: 6500006}
   - 23: {fileID: 2300006}
   - 114: {fileID: 11400018}
-  - 54: {fileID: 5400018}
   m_Layer: 9
   m_Name: 2
   m_TagString: Block
@@ -104,7 +100,7 @@ Transform:
   m_GameObject: {fileID: 100012}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 20, y: 20, z: 20}
+  m_LocalScale: {x: 15, y: 15, z: 15}
   m_Children:
   - {fileID: 400014}
   - {fileID: 400018}
@@ -267,66 +263,6 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100020}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!54 &5400012
-Rigidbody:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 100014}
-  serializedVersion: 2
-  m_Mass: 10
-  m_Drag: 0
-  m_AngularDrag: .75
-  m_UseGravity: 0
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 126
-  m_CollisionDetection: 0
---- !u!54 &5400014
-Rigidbody:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 100016}
-  serializedVersion: 2
-  m_Mass: 10
-  m_Drag: 0
-  m_AngularDrag: .75
-  m_UseGravity: 0
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 126
-  m_CollisionDetection: 0
---- !u!54 &5400016
-Rigidbody:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 100018}
-  serializedVersion: 2
-  m_Mass: 10
-  m_Drag: 0
-  m_AngularDrag: .75
-  m_UseGravity: 0
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 126
-  m_CollisionDetection: 0
---- !u!54 &5400018
-Rigidbody:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 100020}
-  serializedVersion: 2
-  m_Mass: 10
-  m_Drag: 0
-  m_AngularDrag: .75
-  m_UseGravity: 0
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 126
-  m_CollisionDetection: 0
 --- !u!65 &6500000
 BoxCollider:
   m_ObjectHideFlags: 1
@@ -386,8 +322,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c684868b589c66247885a90656415942, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  delayDuration: 1
-  jointPrefab: {fileID: 100000, guid: e7ccf3fae452c85489fc417d97423949, type: 2}
+  BlockPreviewPrefab: {fileID: 100000, guid: 72c0f70a61ea8de46b0cf3966ca93920, type: 2}
+  colliding: 0
 --- !u!114 &11400014
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -399,8 +335,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c684868b589c66247885a90656415942, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  delayDuration: 1
-  jointPrefab: {fileID: 100000, guid: e7ccf3fae452c85489fc417d97423949, type: 2}
+  BlockPreviewPrefab: {fileID: 100000, guid: 72c0f70a61ea8de46b0cf3966ca93920, type: 2}
+  colliding: 0
 --- !u!114 &11400016
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -412,8 +348,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c684868b589c66247885a90656415942, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  delayDuration: 1
-  jointPrefab: {fileID: 100000, guid: e7ccf3fae452c85489fc417d97423949, type: 2}
+  BlockPreviewPrefab: {fileID: 100000, guid: 72c0f70a61ea8de46b0cf3966ca93920, type: 2}
+  colliding: 0
 --- !u!114 &11400018
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -425,8 +361,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c684868b589c66247885a90656415942, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  delayDuration: 1
-  jointPrefab: {fileID: 100000, guid: e7ccf3fae452c85489fc417d97423949, type: 2}
+  BlockPreviewPrefab: {fileID: 100000, guid: 72c0f70a61ea8de46b0cf3966ca93920, type: 2}
+  colliding: 0
 --- !u!114 &11400020
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -438,9 +374,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8525b5b5b298d4e4a993dee82e3918a7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  waitDuration: 1
-  fall: 0
-  predictionPrefab: {fileID: 100012, guid: e7ab6ec712252554eba345849ccf4901, type: 2}
+  isPreview: 0
+  isColliding: 0
+  predictionGoodMaterial: {fileID: 2100000, guid: 7bef2b048399cea448ce2ad3870ad89a,
+    type: 2}
+  predictionBadMaterial: {fileID: 2100000, guid: 6f84d81fc2081b845aedd8215fb561bc,
+    type: 2}
+  originalMaterial: {fileID: 2100000, guid: 536d31e30518649439a47a7cfeb8bbbc, type: 2}
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1
