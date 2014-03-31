@@ -5,6 +5,7 @@ using System.Collections.Generic;
 public class TetriminoHandler : MonoBehaviour {
 	public bool isPreview;
 	public bool isColliding;
+	public bool isOutOfBounds;
 	private Ray debugRay = new Ray();
 	private float debugRayDistance = 0.0f;
 	//private bool joined;
@@ -21,6 +22,9 @@ public class TetriminoHandler : MonoBehaviour {
 		/*if (this.transform.position.y < 0) {
 			Destroy(this.gameObject);
 		}*/
+		if (isPreview) {
+			checkPrediction();
+		}
 	}
 
 	public void setPreview(bool preview) {
@@ -134,10 +138,11 @@ public class TetriminoHandler : MonoBehaviour {
 
 	private void checkPrediction() {
 		isColliding = checkCollisions();
-		if (isPreview && isColliding) {
+		isOutOfBounds = checkBounds();
+		if (isPreview && (isColliding || isOutOfBounds)) {
 			setMaterial(predictionBadMaterial);
 			setTag("Prediction");
-		} else if (isPreview && !isColliding) {
+		} else if (isPreview && !(isColliding || isOutOfBounds)) {
 			setMaterial(predictionGoodMaterial);
 			setTag("Prediction");
 		} else {
@@ -149,6 +154,15 @@ public class TetriminoHandler : MonoBehaviour {
 	public bool checkCollisions() {
 		foreach (Transform t in this.transform) {
 			if (t.GetComponent<block>().colliding) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public bool checkBounds() {
+		foreach (Transform t in this.transform) {
+			if (t.GetComponent<block>().outOfBounds) {
 				return true;
 			}
 		}

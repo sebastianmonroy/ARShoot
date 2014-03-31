@@ -38,10 +38,9 @@ public class build : MonoBehaviour {
 				// Handles performing certain "build" actions based on the user input detected in GestureHandler.cs
 				case Gesture.CLICK:
 					// CLICK gesture detected
-					print("click");
 					RaycastHit hit;
 					if (Physics.Raycast(GestureHandler.CurrentRay, out hit)) {
-						print("tag = " + hit.transform.gameObject.tag);
+						print("clicked on " + hit.transform.gameObject.tag);
 						if (hit.transform.gameObject.tag == "Block") {
 							if (selectedBlock != null) {
 								// remove previous preview if necessary
@@ -50,6 +49,9 @@ public class build : MonoBehaviour {
 							// preview available sides for selected block
 							selectedBlock = hit.transform.gameObject;
 							selectedBlock.GetComponent<block>().previewSides();
+							if (selectedTetris.active) {
+								selectedTetris.active = false;
+							}
 						} else if (hit.transform.gameObject.tag == "Preview") {
 							// show tetris prediction when preview block is touched
 							selectedPreviewBlock = hit.transform.gameObject;
@@ -69,7 +71,7 @@ public class build : MonoBehaviour {
 				case Gesture.SCROLL_LEFT:
 					// SCROLL_LEFT gesture detected
 					print("scroll left");
-					if (selectedTetris.GetComponent<TetriminoHandler>().isPreview) {
+					if (selectedTetris.active && selectedTetris.GetComponent<TetriminoHandler>().isPreview) {
 						// If there is currently a selected tetris block, rotate it accordingly
 						selectedTetris.GetComponent<TetriminoHandler>().incrementYRotation(1);
 						correctPreview();
@@ -79,7 +81,7 @@ public class build : MonoBehaviour {
 				case Gesture.SCROLL_RIGHT:
 					// SCROLL_RIGHT gesture detected
 					print("scroll right");
-					if (selectedTetris.GetComponent<TetriminoHandler>().isPreview) {
+					if (selectedTetris.active && selectedTetris.GetComponent<TetriminoHandler>().isPreview) {
 						// If there is currently a selected tetris block, rotate it accordingly
 						selectedTetris.GetComponent<TetriminoHandler>().incrementYRotation(-1);
 						correctPreview();
@@ -89,7 +91,7 @@ public class build : MonoBehaviour {
 				case Gesture.SCROLL_DOWN:
 					// SCROLL_DOWN gesture detected
 					print("scroll down");
-					if (selectedTetris.GetComponent<TetriminoHandler>().isPreview) {
+					if (selectedTetris.active && selectedTetris.GetComponent<TetriminoHandler>().isPreview) {
 						// If there is currently a selected tetris block, rotate it accordingly
 						selectedTetris.GetComponent<TetriminoHandler>().incrementRotation(selectedTetris.transform.position - this.transform.position);
 						correctPreview();
@@ -99,7 +101,7 @@ public class build : MonoBehaviour {
 				case Gesture.SCROLL_UP:
 					// SCROLL_UP gesture detected
 					print("scroll up");
-					if (selectedTetris.GetComponent<TetriminoHandler>().isPreview) {
+					if (selectedTetris.active && selectedTetris.GetComponent<TetriminoHandler>().isPreview) {
 						// If there is currently a selected tetris block, rotate it accordingly
 						selectedTetris.GetComponent<TetriminoHandler>().incrementRotation(selectedTetris.transform.position - this.transform.position);
 						correctPreview();

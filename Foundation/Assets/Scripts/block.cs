@@ -5,6 +5,7 @@ using System.Collections.Generic;
 public class block : MonoBehaviour {
 	public GameObject BlockPreviewPrefab;
 	public bool colliding = false;
+	public bool outOfBounds = false;
 	//public List<GameObject> collisionObjects;
 
 	// Use this for initialization
@@ -14,7 +15,12 @@ public class block : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
-
+		if (this.transform.parent.gameObject.tag == "Tetris") {
+			if (this.transform.parent.GetComponent<TetriminoHandler>().isPreview) {
+				checkCollisions();
+				checkBounds();
+			}
+		}
 	}
 	
 	public bool hasBlockAbove(){
@@ -60,20 +66,53 @@ public class block : MonoBehaviour {
 		}
 	}
 
-	public void OnCollisionEnter(Collision collision) {
+	public void checkBounds() {
+		if (!outOfBounds && !GameHandler.isInBounds(this.transform.position)) {
+			outOfBounds = true;
+		} else if (outOfBounds && GameHandler.isInBounds(this.transform.position)) {
+			outOfBounds = false;
+		}
+	}
+
+	public void checkCollisions() {
+		if (!colliding && isColliding()) {
+			colliding = true;
+		} else if (colliding && !isColliding()) {
+			colliding = false;
+		}
+	}
+
+	public bool isColliding() {
+		GameObject[] blocks = GameObject.FindGameObjectsWithTag("Block");
+
+		foreach (GameObject b in blocks) {
+			if (b != this.gameObject) {
+				if (this.collider.bounds.Intersects(b.collider.bounds)) {
+					print("collision with " + b.gameObject.name);
+					return true;
+				}
+			}
+		}
+
+		return false;
+	}
+
+	void OnCollisionEnter(Collision collision) {
+		print("collision with " + collision.gameObject.tag);
 		if (collision.gameObject.tag == "Block") {
 			//collisionObjects.Add(collision.gameObject);
 			colliding = true;
 		}
 	}
 
-	public void OnCollisionStay(Collision collision) {
+	void OnCollisionStay(Collision collision) {
+		print("collision with " + collision.gameObject.tag);
 		if (!colliding && collision.gameObject.tag == "Block") {
 			colliding = true;
 		}
 	}
 
-	public void OnCollisionExit(Collision collision) {
+	void OnCollisionExit(Collision collision) {
 		if (collision.gameObject.tag == "Block") {
 			//collisionObjects.Remove(collision.gameObject);
 			colliding = false;
