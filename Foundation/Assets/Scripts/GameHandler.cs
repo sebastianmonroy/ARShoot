@@ -9,6 +9,7 @@ public class GameHandler : MonoBehaviour {
 	public static int PLAYER_NUM;
 	public static Vector3 FLOOR_MIN;
 	public static Vector3 FLOOR_MAX;
+	public static float PRIORITY_DECAY_PERIOD = 5;
 
 
 	void Start () {

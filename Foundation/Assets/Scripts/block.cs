@@ -6,21 +6,55 @@ public class block : MonoBehaviour {
 	public GameObject BlockPreviewPrefab;
 	public bool colliding = false;
 	public bool outOfBounds = false;
+	public float priority;
+	private float pCount;
+	private float pDuration;
 	//public List<GameObject> collisionObjects;
 
 	// Use this for initialization
 	void Start () {
-
+		priority = 0;
+		pCount = 0;
+		pDuration = GameHandler.PRIORITY_DECAY_PERIOD;
 	}
 
 	// Update is called once per frame
 	void Update () {
-		if (this.transform.parent.gameObject.tag == "Tetris") {
-			if (this.transform.parent.GetComponent<TetriminoHandler>().isPreview) {
-				checkCollisions();
-				checkBounds();
+		if (this.transform.parent != null) {
+			if (this.transform.parent.gameObject.tag == "Tetris") {
+				if (this.transform.parent.GetComponent<TetriminoHandler>().isPreview) {
+					checkCollisions();
+					checkBounds();
+				}
 			}
 		}
+
+		if (pCount >= pDuration) {
+			decreasePriority(0.01f);
+			pCount = 0;
+		} else {
+			pCount += Time.deltaTime;
+		}
+	}
+
+	public void increasePriority(float amount) {
+		priority += amount;
+		if (priority > 1.0f) {
+			priority = 1.0f;
+		}
+		updateColor();
+	}
+
+	public void decreasePriority(float amount) {
+		priority -= amount;
+		if (priority < 0.0f) {
+			priority = 0.0f;
+		}
+		updateColor();
+	}
+
+	public void updateColor() {
+		this.renderer.material.color = new Color(1.0f - priority, 1.0f - priority, 1.0f, 1.0f);
 	}
 	
 	public bool hasBlockAbove(){

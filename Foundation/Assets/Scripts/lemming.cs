@@ -1,15 +1,19 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class lemming : MonoBehaviour {
 	public float speed;
 	public float walkPeriod;
 	public Vector3 CurrentDirection;
 	public Action CurrentAction;
+	public Action PreviousAction;
 	private float walkCount;
 	private GameObject climbTarget;
 	private Vector3 positionMarker;
 	private Vector3 directionMarker;
+	private List<GameObject> blocksClimbed;
+	public bool debug;
 
 	public enum Action {
 		WALKING,
@@ -20,10 +24,10 @@ public class lemming : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		CurrentAction = Action.WALKING;
+		setAction(Action.WALKING);
 		CurrentDirection = Vector3.forward;
 		walkCount = 0;
-		this.rigidbody.constraints = RigidbodyConstraints.FreezeRotation;
+		blocksClimbed = new List<GameObject>();
 	}
 	
 	// Update is called once per frame
@@ -32,6 +36,9 @@ public class lemming : MonoBehaviour {
 			this.rigidbody.constraints = RigidbodyConstraints.FreezeRotation;
 		}
 
+		if (CurrentAction != PreviousAction && debug) {
+			print("Lemming: " + CurrentAction);
+		}
 
 		switch (CurrentAction) {
 			case Action.WALKING:
@@ -41,7 +48,7 @@ public class lemming : MonoBehaviour {
 				if (walkCount >= walkPeriod) {
 					walkCount = 0;
 					changeDirection("random");
-					print("CHANGE DIRECTION");
+					//print("CHANGE DIRECTION");
 				}
 
 				RaycastHit hit;
@@ -49,12 +56,13 @@ public class lemming : MonoBehaviour {
 					walkCount = walkPeriod;
 				} 
 				
-				if (!Physics.Raycast(this.transform.position, -Vector3.up, out hit, this.collider.bounds.extents.y + 1)) {
-					CurrentAction = Action.FALLING;
+				if (!Physics.Raycast(this.transform.position, -Vector3.up, out hit, GameHandler.BLOCK_SIZE)) {
+					setAction(Action.FALLING);
+				} else {
+					setAction(Action.WALKING);
 				}
 
 				move();
-				print("Lemming: Walking");
 				break;
 			case Action.CLIMBING_UP:
 				this.rigidbody.useGravity = false;
@@ -63,36 +71,52 @@ public class lemming : MonoBehaviour {
 					if (this.collider.bounds.min.y > climbTarget.collider.bounds.max.y) {
 						// done climbing up
 						positionMarker = this.transform.position;
-						CurrentAction = Action.CLIMBING_ON;
+						setAction(Action.CLIMBING_ON);
 					} else {
 						// continue climbing
-						changeDirection("up");
+						CurrentDirection = Vector3.up;
+						setAction(Action.CLIMBING_UP);
 					}
 				}
 
 				move();
-				print("Lemming: Climbing up");
 				break;
 			case Action.CLIMBING_ON:
+				this.rigidbody.useGravity = false;
+
 				if (climbTarget != null) {
 					CurrentDirection = directionMarker;
 					if (Vector3.Distance(this.transform.position, positionMarker) > this.collider.bounds.size.x) {
+						recordClimbedBlock(climbTarget);
 						climbTarget = null;
 						walkCount = 0;
-						CurrentAction = Action.WALKING;
+						setAction(Action.WALKING);
+					} else {
+						setAction(Action.CLIMBING_ON);
 					}
+				} else {
+					setAction(Action.FALLING);
 				}
 
 				move();
-				print("Lemming: Climbing on");
 				break;
 			case Action.FALLING:
 				this.rigidbody.useGravity = true;
-				walkCount = walkPeriod;
 
-				print("Lemming: Falling");
+				if (this.transform.position.y < 0) {
+					Destroy(this.gameObject);
+				} else {
+					setAction(Action.FALLING);
+				}
+
+				walkCount = walkPeriod;
 				break;
 		}
+	}
+
+	private void setAction(Action nextAction) {
+		PreviousAction = CurrentAction;
+		CurrentAction = nextAction;
 	}
 
 	void OnCollisionEnter(Collision collision) {
@@ -101,11 +125,11 @@ public class lemming : MonoBehaviour {
 				if (collision.gameObject.tag == "Block") {
 					GameObject block = collision.gameObject;
 					if (block.transform.position.y < this.transform.position.y) {
-						CurrentAction = Action.WALKING;
+						setAction(Action.WALKING);
 					} else if (!block.GetComponent<block>().hasBlockAbove()) {
 						climbTarget = block;
 						directionMarker = CurrentDirection;
-						CurrentAction = Action.CLIMBING_UP;
+						setAction(Action.CLIMBING_UP);
 					}
 				}
 				break;
@@ -114,13 +138,16 @@ public class lemming : MonoBehaviour {
 					GameObject block = collision.gameObject;
 					if (block != climbTarget) {
 						climbTarget = null;
-						CurrentAction = Action.FALLING;
+						setAction(Action.FALLING);
 					}
 				}
 				break;
 			case Action.FALLING:
-				if (collision.gameObject.tag == "Block" || collision.gameObject.tag == "Floor") {
-					CurrentAction = Action.WALKING;
+				if (collision.gameObject.tag == "Block") {
+					setAction(Action.WALKING);
+				} else if (collision.gameObject.tag == "Floor") {
+					setAction(Action.WALKING);
+					blocksClimbed.Clear();
 				}
 				break;
 		}
@@ -129,13 +156,48 @@ public class lemming : MonoBehaviour {
 	void OnCollisionStay(Collision collision) {
 		if (CurrentAction == Action.FALLING) {
 			if (collision.gameObject.tag == "Block" || collision.gameObject.tag == "Floor") {
-				CurrentAction = Action.WALKING;
+				setAction(Action.WALKING);
 			}
 		}
 	}
 
+	private void recordClimbedBlock(GameObject block) {
+		int index = (int) Mathf.Floor(block.transform.position.y / GameHandler.BLOCK_SIZE);
+		//print("index = " + index);
+		blocksClimbed.Remove(block);
+		blocksClimbed.Add(block);
+
+		block.GetComponent<block>().increasePriority(0.05f);
+		
+
+		bool isTallest = true;
+		GameObject[] allBlocks = GameObject.FindGameObjectsWithTag("Block");
+		foreach (GameObject b in allBlocks) {
+			if (b.transform.position.y > block.transform.position.y) {
+				isTallest = false;
+				break;
+			}
+		}
+
+		if (isTallest) {
+			highlightClimbedBlocks();
+		}
+	}
+
+	private void highlightClimbedBlocks() {
+		foreach (GameObject b in blocksClimbed) {
+			b.GetComponent<block>().increasePriority(0.2f);
+		}
+	}
+
 	private void move() {
-		this.transform.position += CurrentDirection * speed * Time.deltaTime;
+		Vector3 newPosition = this.transform.position + CurrentDirection * speed * Time.deltaTime;
+		if (GameHandler.isInBounds(newPosition)) {
+			this.transform.position = newPosition;
+		} else {
+			walkCount = walkPeriod;
+		}
+
 	}
 
 	//change to an action, default is a random one
