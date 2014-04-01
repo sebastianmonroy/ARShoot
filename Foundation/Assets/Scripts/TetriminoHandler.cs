@@ -32,6 +32,12 @@ public class TetriminoHandler : MonoBehaviour {
 		checkPrediction();
 	}
 
+	private void enableColliders(bool input) {
+		foreach (Transform t in this.transform) {
+			t.gameObject.collider.enabled = input;
+		}
+	}
+
 	public void setX(float posX) {
 		this.transform.position = new Vector3(Mathf.Clamp(posX, -90, 90), this.transform.position.y, this.transform.position.z);
 		

@@ -7,15 +7,16 @@ public class block : MonoBehaviour {
 	public bool colliding = false;
 	public bool outOfBounds = false;
 	public float priority;
-	private float pCount;
-	private float pDuration;
+	private float decayCount;
+	private float decayPeriod;
+	public int level;
 	//public List<GameObject> collisionObjects;
 
 	// Use this for initialization
 	void Start () {
 		priority = 0;
-		pCount = 0;
-		pDuration = GameHandler.PRIORITY_DECAY_PERIOD;
+		decayCount = 0;
+		decayPeriod = GameHandler.PRIORITY_DECAY_PERIOD;
 	}
 
 	// Update is called once per frame
@@ -25,15 +26,25 @@ public class block : MonoBehaviour {
 				if (this.transform.parent.GetComponent<TetriminoHandler>().isPreview) {
 					checkCollisions();
 					checkBounds();
+				} else {
+					updatePriority();
+					checkLevel();
 				}
 			}
+		} else {
+			updatePriority();
+			checkLevel();
 		}
 
-		if (pCount >= pDuration) {
-			decreasePriority(0.01f);
-			pCount = 0;
+		
+	}
+
+	public void updatePriority() {
+		if (decayCount >= decayPeriod) {
+			decreasePriority(LemmingController.DECAY_AMOUNT);
+			decayCount = 0;
 		} else {
-			pCount += Time.deltaTime;
+			decayCount += Time.deltaTime;
 		}
 	}
 
@@ -118,6 +129,10 @@ public class block : MonoBehaviour {
 		}
 	}
 
+	public void checkLevel() {
+		level = (int) Mathf.Floor(this.transform.position.y / GameHandler.BLOCK_SIZE);
+	}
+
 	public bool isColliding() {
 		GameObject[] blocks = GameObject.FindGameObjectsWithTag("Block");
 
@@ -131,27 +146,5 @@ public class block : MonoBehaviour {
 		}
 
 		return false;
-	}
-
-	void OnCollisionEnter(Collision collision) {
-		//print("collision with " + collision.gameObject.tag);
-		if (collision.gameObject.tag == "Block") {
-			//collisionObjects.Add(collision.gameObject);
-			colliding = true;
-		}
-	}
-
-	void OnCollisionStay(Collision collision) {
-		//print("collision with " + collision.gameObject.tag);
-		if (!colliding && collision.gameObject.tag == "Block") {
-			colliding = true;
-		}
-	}
-
-	void OnCollisionExit(Collision collision) {
-		if (collision.gameObject.tag == "Block") {
-			//collisionObjects.Remove(collision.gameObject);
-			colliding = false;
-		}
 	}
 }
