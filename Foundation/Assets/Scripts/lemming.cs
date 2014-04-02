@@ -16,6 +16,7 @@ public class lemming : MonoBehaviour {
 	private List<GameObject> blocksClimbed;
 	public bool debug;
 	public int level;
+	public int bestLevel;
 
 	public enum Action {
 		WALKING,
@@ -30,6 +31,7 @@ public class lemming : MonoBehaviour {
 		setAction(Action.WALKING);
 		CurrentDirection = Vector3.forward;
 		walkCount = 0;
+		bestLevel = 0;
 		blocksClimbed = new List<GameObject>();
 	}
 	
@@ -43,9 +45,11 @@ public class lemming : MonoBehaviour {
 			this.rigidbody.constraints = RigidbodyConstraints.FreezeRotation;
 		}
 
+
 		switch (CurrentAction) {
 			case Action.WALKING:
 				this.rigidbody.useGravity = false;
+				checkLevel();
 
 				walkCount += Time.deltaTime;
 				if (walkCount >= walkPeriod) {
@@ -82,7 +86,8 @@ public class lemming : MonoBehaviour {
 				break;
 			case Action.CLIMBING_UP:
 				this.rigidbody.useGravity = false;
-				changeDirection("up");
+				this.rigidbody.velocity = Vector3.zero;
+				CurrentDirection = Vector3.up;
 
 				if (climbTarget != null) {
 					if (this.collider.bounds.min.y > climbTarget.collider.bounds.max.y) {
@@ -96,10 +101,11 @@ public class lemming : MonoBehaviour {
 				break;
 			case Action.CLIMBING_ON:
 				this.rigidbody.useGravity = false;
+				this.rigidbody.velocity = Vector3.zero;
 
 				if (climbTarget != null) {
 					CurrentDirection = directionMarker;
-					if (Vector3.Distance(this.transform.position, positionMarker) > 2 * this.collider.bounds.size.x) {
+					if (Vector3.Distance(this.transform.position, positionMarker) > 1.5 * this.collider.bounds.size.x) {
 						recordClimbedBlock(climbTarget);
 						//climbTarget = null;
 						walkCount = 0;
@@ -155,10 +161,16 @@ public class lemming : MonoBehaviour {
 									climbTarget = blockObject;
 									directionMarker = CurrentDirection;
 									setAction(Action.CLIMBING_UP);
+							} else {
+								// Can't climb this block on my level, avoid it.
+								if (debug)	print("avoiding block");
+								//this.level = block.level;
+								avoidThisCollision(collision);
 							}
 						} else {
 							// Can't climb this block on my level, avoid it.
 							if (debug)	print("avoiding block");
+							//this.level = block.level;
 							avoidThisCollision(collision);
 						}
 					} else {
@@ -216,7 +228,7 @@ public class lemming : MonoBehaviour {
 			case Action.FALLING:
 				if (collision.gameObject.tag == "Block") {
 					setAction(Action.WALKING);
-					level = collision.gameObject.GetComponent<block>().level + 1;
+					//level = collision.gameObject.GetComponent<block>().level + 1;
 				}
 				break;
 		}
@@ -225,6 +237,7 @@ public class lemming : MonoBehaviour {
 			setAction(Action.WALKING);
 			blocksClimbed.Clear();
 			level = 0;
+			bestLevel = 0;
 		}
 	}
 
@@ -251,6 +264,7 @@ public class lemming : MonoBehaviour {
 	private void recordClimbedBlock(GameObject blockObject) {
 		block block = blockObject.GetComponent<block>();
 		level = block.level + 1;
+
 		//if (debug) 	print("index = " + block.level);
 		blocksClimbed.Remove(blockObject);
 		blocksClimbed.Add(blockObject);
@@ -258,9 +272,14 @@ public class lemming : MonoBehaviour {
 		//LemmingController.removeBlock(blockObject);
 		LemmingController.addBlock(blockObject);
 
-		block.increasePriority(0.02f);
+		/*block.increasePriority(0.02f);
 
 		if (block.level >= LemmingController.HIGHEST_LEVEL) {
+			highlightClimbedBlocks();
+		}*/
+
+		if (level >= bestLevel) {
+			bestLevel = level;
 			highlightClimbedBlocks();
 		}
 	}
@@ -272,7 +291,8 @@ public class lemming : MonoBehaviour {
 
 	private void highlightClimbedBlocks() {
 		foreach (GameObject b in blocksClimbed) {
-			b.GetComponent<block>().increasePriority(0.2f);
+			block block = b.GetComponent<block>();
+			block.increasePriority(0.25f * (block.level+1)/(bestLevel+1));
 		}
 		climbTarget = null;
 	}
@@ -330,6 +350,10 @@ public class lemming : MonoBehaviour {
 			if (debug) print("target = " + targetRotation);
 			setRotation(LemmingController.getTargetDirection(this.gameObject));
 		}
+	}
+
+	private void checkLevel() {
+		this.level = (int) Mathf.Floor(this.transform.position.y / GameHandler.BLOCK_SIZE);
 	}
 
 	//change to an action, default is a random one

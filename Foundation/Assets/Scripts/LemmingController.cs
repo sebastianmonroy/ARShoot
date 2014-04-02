@@ -48,9 +48,12 @@ public class LemmingController : MonoBehaviour {
 	public static void addTetrimino(GameObject tetriminoObject) {
 		foreach (Transform t in tetriminoObject.transform) {
 			if (t.gameObject.tag == "Block") {
-				t.gameObject.GetComponent<block>().checkLevel();
-				//print("added block @ " + t.gameObject.GetComponent<block>().level);
-				addBlock(t.gameObject);
+				block block = t.gameObject.GetComponent<block>();
+				block.checkLevel();
+				if (!block.hasBlockAbove()) {
+					//print("added block @ " + t.gameObject.GetComponent<block>().level);
+					addBlock(t.gameObject);
+				}
 			}
 		}
 	}
