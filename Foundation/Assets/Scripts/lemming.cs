@@ -10,6 +10,7 @@ public class lemming : MonoBehaviour {
 	public Action PreviousAction;
 	private float walkCount;
 	private GameObject climbTarget;
+	private GameObject avoidTarget;
 	private Vector3 positionMarker;
 	private Vector3 directionMarker;
 	private List<GameObject> blocksClimbed;
@@ -18,6 +19,7 @@ public class lemming : MonoBehaviour {
 
 	public enum Action {
 		WALKING,
+		AVOIDING,
 		CLIMBING_UP,
 		CLIMBING_ON,
 		FALLING
@@ -48,9 +50,7 @@ public class lemming : MonoBehaviour {
 				walkCount += Time.deltaTime;
 				if (walkCount >= walkPeriod) {
 					walkCount = 0;
-					setTargetRotation();	
-					//changeDirection("random");
-					//print("CHANGE DIRECTION");
+					setTargetRotation();
 				}
 
 				RaycastHit hit;
@@ -59,6 +59,22 @@ public class lemming : MonoBehaviour {
 				} 
 				
 				if (!Physics.Raycast(this.transform.position, -Vector3.up, out hit, GameHandler.BLOCK_SIZE)) {
+					setAction(Action.FALLING);
+				}
+
+				walk();
+				break;
+			case Action.AVOIDING:
+				this.rigidbody.useGravity = false;
+
+				walkCount += Time.deltaTime;
+
+				if (walkCount >= 2 * GameHandler.BLOCK_SIZE / speed) { // t = d / v
+					walkCount = 0;
+					setAction(Action.WALKING);
+				}
+
+				if (!Physics.Raycast(this.transform.position, -Vector3.up, GameHandler.BLOCK_SIZE)) {
 					setAction(Action.FALLING);
 				}
 
@@ -85,7 +101,7 @@ public class lemming : MonoBehaviour {
 					CurrentDirection = directionMarker;
 					if (Vector3.Distance(this.transform.position, positionMarker) > 2 * this.collider.bounds.size.x) {
 						recordClimbedBlock(climbTarget);
-						climbTarget = null;
+						//climbTarget = null;
 						walkCount = 0;
 						setAction(Action.WALKING);
 					}
@@ -98,6 +114,11 @@ public class lemming : MonoBehaviour {
 
 				if (this.transform.position.y < 0) {
 					Destroy(this.gameObject);
+				}
+
+				if (climbTarget != null) {
+					recordFallOffBlock(climbTarget);
+					climbTarget = null;
 				}
 
 				walkCount = walkPeriod;
@@ -117,31 +138,77 @@ public class lemming : MonoBehaviour {
 		switch (CurrentAction) {
 			case Action.WALKING:
 				if (collision.gameObject.tag == "Block") {
-					GameObject block = collision.gameObject;
-					if (block.transform.position.y < this.transform.position.y) {
-						if (debug)	print("foo " + block.transform.position.y + " < " + this.transform.position.y);
-						setAction(Action.WALKING);
-					} else if (!block.GetComponent<block>().hasBlockAbove()) {
-						if (debug)	print("bar");
-						// No block above block I bumped into
-						RaycastHit hit;
-						bool somethingAboveMe = Physics.Raycast(this.transform.position, Vector3.up, out hit, GameHandler.BLOCK_SIZE);
+					// Bumped into block
+					GameObject blockObject = collision.gameObject;
+					block block = blockObject.GetComponent<block>();
+					if (block.level == this.level) {
+						// Block is on my level
+						if (!block.hasBlockAbove()) {
+							//if (debug)	print("bar");
+							// And no block above block I bumped into
+							RaycastHit hit;
+							bool somethingAboveMe = Physics.Raycast(this.transform.position, Vector3.up, out hit, GameHandler.BLOCK_SIZE);
 
-						if (!somethingAboveMe || (somethingAboveMe && hit.transform.gameObject.tag != "Block")) {
-								if (debug)	print("yo");
-								// No block above me, so climb
-								climbTarget = block;
-								directionMarker = CurrentDirection;
-								setAction(Action.CLIMBING_UP);
+							if (!somethingAboveMe || (somethingAboveMe && hit.transform.gameObject.tag != "Block")) {
+									//if (debug)	print("yo");
+									// No block above me, so climb
+									climbTarget = blockObject;
+									directionMarker = CurrentDirection;
+									setAction(Action.CLIMBING_UP);
+							}
+						} else {
+							// Can't climb this block on my level, avoid it.
+							if (debug)	print("avoiding block");
+							avoidThisCollision(collision);
 						}
+					} else {
+						// Block not on my level, continue walking
+						//if (debug)	print("foo " + blockObject.transform.position.y + " < " + this.transform.position.y);
+					}
+				}
+				break;
+			case Action.AVOIDING:
+				if (collision.gameObject.tag == "Block") {
+					// Bumped into block
+					if (collision.gameObject != avoidTarget) {
+						// Block isn't the block I'm currently avoiding
+						GameObject blockObject = collision.gameObject;
+						block block = blockObject.GetComponent<block>();
+						if (block.level == this.level) {
+							// Block is on my level
+							if (!block.hasBlockAbove()) {
+								//if (debug)	print("bar");
+								// No block above block I bumped into
+								RaycastHit hit;
+								bool somethingAboveMe = Physics.Raycast(this.transform.position, Vector3.up, out hit, GameHandler.BLOCK_SIZE);
+
+								if (!somethingAboveMe || (somethingAboveMe && hit.transform.gameObject.tag != "Block")) {
+										//if (debug)	print("yo");
+										// No block above me, so climb
+										climbTarget = blockObject;
+										directionMarker = CurrentDirection;
+										setAction(Action.CLIMBING_UP);
+								}
+							} else {
+								// Can't climb this block on my level, avoid it.
+								if (debug)	print("avoiding block continued");
+								avoidThisCollision(collision);
+							}
+						} /*else {
+							// Block not on my level, continue walking
+							if (debug)	print("foo " + blockObject.transform.position.y + " < " + this.transform.position.y);
+						}*/
+					}
+				} else {
+					if (collision.gameObject.tag == "Wall") {
+						avoidThisCollision(collision);
 					}
 				}
 				break;
 			case Action.CLIMBING_UP:
 				if (collision.gameObject.tag == "Block") {
-					GameObject block = collision.gameObject;
-					if (block != climbTarget) {
-						climbTarget = null;
+					GameObject blockObject = collision.gameObject;
+					if (blockObject != climbTarget) {
 						setAction(Action.FALLING);
 					}
 				}
@@ -150,12 +217,14 @@ public class lemming : MonoBehaviour {
 				if (collision.gameObject.tag == "Block") {
 					setAction(Action.WALKING);
 					level = collision.gameObject.GetComponent<block>().level + 1;
-				} else if (collision.gameObject.tag == "Floor") {
-					setAction(Action.WALKING);
-					blocksClimbed.Clear();
-					level = 0;
 				}
 				break;
+		}
+
+		if (collision.gameObject.tag == "Floor") {
+			setAction(Action.WALKING);
+			blocksClimbed.Clear();
+			level = 0;
 		}
 	}
 
@@ -167,6 +236,18 @@ public class lemming : MonoBehaviour {
 		}
 	}
 
+	private void avoidThisCollision(Collision collision) {
+		foreach (ContactPoint contact in collision.contacts) {
+			if (contact.otherCollider.tag == "Block" || contact.otherCollider.tag == "Wall") {
+				avoidTarget = contact.otherCollider.gameObject;
+				setRotation(contact.point - this.transform.position);
+				turnRight();
+				setAction(Action.AVOIDING);
+				break;
+			}
+		}
+	}
+
 	private void recordClimbedBlock(GameObject blockObject) {
 		block block = blockObject.GetComponent<block>();
 		level = block.level + 1;
@@ -174,7 +255,7 @@ public class lemming : MonoBehaviour {
 		blocksClimbed.Remove(blockObject);
 		blocksClimbed.Add(blockObject);
 
-		LemmingController.removeBlock(blockObject);
+		//LemmingController.removeBlock(blockObject);
 		LemmingController.addBlock(blockObject);
 
 		block.increasePriority(0.02f);
@@ -184,10 +265,16 @@ public class lemming : MonoBehaviour {
 		}
 	}
 
+	private void recordFallOffBlock(GameObject blockObject) {
+		block block = blockObject.GetComponent<block>();
+		block.decreasePriority(0.01f);
+	}
+
 	private void highlightClimbedBlocks() {
 		foreach (GameObject b in blocksClimbed) {
 			b.GetComponent<block>().increasePriority(0.2f);
 		}
+		climbTarget = null;
 	}
 
 	private void walk() {
@@ -213,17 +300,34 @@ public class lemming : MonoBehaviour {
 	}
 
 	private void setRotation(Vector3 newRotation)  {
-		this.transform.LookAt(this.transform.position + newRotation);
+		this.transform.LookAt(this.transform.position + new Vector3(newRotation.x, 0, newRotation.z).normalized);
 		CurrentDirection = this.transform.forward;
+	}
+
+	private void setRotation(float degrees) {
+		this.transform.Rotate(Vector3.up, degrees);
+		CurrentDirection = this.transform.forward;
+	}
+
+	private void addRotation(float degrees) {
+		//this.transform.rotation *= Quaternion.Euler(0, degrees, 0);
+		this.transform.RotateAround(this.transform.position, Vector3.up, degrees);
+		CurrentDirection = this.transform.forward;
+	}
+
+	private void turnRight() {
+		if (debug) print("turned right");
+		//setRotation(this.transform.position + this.transform.right);
+		addRotation(90);
 	}
 
 	private void setTargetRotation() {
 		Vector3 targetRotation = LemmingController.getTargetDirection(this.gameObject);
 		if (targetRotation == Vector3.zero) {
-			//if (debug) print("rando");
+			if (debug) print("rando");
 			setRandomRotation();
 		} else {
-			if (debug) print("target");
+			if (debug) print("target = " + targetRotation);
 			setRotation(LemmingController.getTargetDirection(this.gameObject));
 		}
 	}

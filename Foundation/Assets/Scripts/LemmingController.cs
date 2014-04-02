@@ -4,13 +4,11 @@ using System.Collections.Generic;
 
 public class LemmingController : MonoBehaviour {
 	public static int HIGHEST_LEVEL;
-	public static float DECAY_AMOUNT;
 	public static List<List<GameObject>> allBlocks = new List<List<GameObject>>();
 
 	// Use this for initialization
 	void Start () {
 		HIGHEST_LEVEL = 0;
-		DECAY_AMOUNT = 0.01f;
 	}
 	
 	// Update is called once per frame
@@ -19,17 +17,23 @@ public class LemmingController : MonoBehaviour {
 	}
 
 	public static void addBlock(GameObject blockObject) {
+		removeBlock(blockObject);
 		block block = blockObject.GetComponent<block>();
 		if (block.level >= allBlocks.Count) {
 			for (int i = 0; i < block.level - allBlocks.Count; i++) {
 				allBlocks.Add(new List<GameObject>());
 			}
 			allBlocks.Insert(block.level, new List<GameObject> {blockObject});
-			HIGHEST_LEVEL = block.level;
 		} else {
 			allBlocks[block.level].Add(blockObject);
 		}
-		printList();
+
+		if (block.level > HIGHEST_LEVEL) {
+			HIGHEST_LEVEL = block.level;
+		}
+		//print("highest level = " + HIGHEST_LEVEL);
+		//print("list length = " + allBlocks.Count);
+		//printList();
 	}
 
 	public static void removeBlock(GameObject blockObject) {
@@ -37,7 +41,17 @@ public class LemmingController : MonoBehaviour {
 		//print (allBlocks.Count + " >= " + block.level);
 		if (allBlocks.Count > block.level) {
 			allBlocks[block.level].Remove(blockObject);
-			printList();
+			//printList();
+		}
+	}
+
+	public static void addTetrimino(GameObject tetriminoObject) {
+		foreach (Transform t in tetriminoObject.transform) {
+			if (t.gameObject.tag == "Block") {
+				t.gameObject.GetComponent<block>().checkLevel();
+				//print("added block @ " + t.gameObject.GetComponent<block>().level);
+				addBlock(t.gameObject);
+			}
 		}
 	}
 
@@ -48,7 +62,8 @@ public class LemmingController : MonoBehaviour {
 		if (allBlocks.Count > lemming.level) {
 			foreach (GameObject blockObject in allBlocks[lemming.level]) {
 				block block = blockObject.GetComponent<block>();
-				vectorSum += block.priority * (blockObject.transform.position - lemmingObject.transform.position);
+				Vector3 toBlock = (blockObject.transform.position - lemmingObject.transform.position);
+				vectorSum += block.priority * new Vector3(toBlock.x, 0, toBlock.z) / (1 + toBlock.magnitude);
 				//prioritySum += block.priority;
 			}
 		}

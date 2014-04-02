@@ -87,7 +87,7 @@ GameObject:
   - 23: {fileID: 159555882}
   m_Layer: 0
   m_Name: Cube
-  m_TagString: Untagged
+  m_TagString: Wall
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -156,7 +156,7 @@ GameObject:
   - 23: {fileID: 269091089}
   m_Layer: 0
   m_Name: Cube
-  m_TagString: Untagged
+  m_TagString: Wall
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -285,7 +285,7 @@ GameObject:
   - 23: {fileID: 701445365}
   m_Layer: 0
   m_Name: Cube
-  m_TagString: Untagged
+  m_TagString: Wall
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -974,6 +974,7 @@ MonoBehaviour:
   selectedTetris: {fileID: 0}
   selectedBlock: {fileID: 0}
   selectedPreviewBlock: {fileID: 0}
+  debug: 0
 --- !u!114 &1584842137
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1038,7 +1039,7 @@ GameObject:
   - 23: {fileID: 1589359612}
   m_Layer: 0
   m_Name: Cube
-  m_TagString: Untagged
+  m_TagString: Wall
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1205,7 +1206,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e03b25fc691ca474f85702b8e7bd14c3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cellPrefab: {fileID: 100000, guid: c4c9011b5180df64e93faeb6da2a57f4, type: 2}
 --- !u!1 &2041720322
 GameObject:
   m_ObjectHideFlags: 0

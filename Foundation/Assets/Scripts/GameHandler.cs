@@ -9,22 +9,17 @@ public class GameHandler : MonoBehaviour {
 	public static int PLAYER_NUM;
 	public static Vector3 FLOOR_MIN;
 	public static Vector3 FLOOR_MAX;
-	public static float PRIORITY_DECAY_PERIOD = 5;
-
+	public static float PRIORITY_DECAY_PERIOD = 2.0f;
+	public static float PRIORITY_DECAY_AMOUNT = 0.01f;
 
 	void Start () {
 		PLAYER_NUM = 0;
 		BuildHandler = Camera.main.GetComponent<build>();
 		FloorObject = GameObject.FindWithTag("Floor");
 
-		float tilingScale = (FloorObject.transform.parent.localScale.x * FloorObject.transform.localScale.x) / BLOCK_SIZE;
-		
-		FloorObject.renderer.material.mainTextureScale = new Vector2(tilingScale, tilingScale);
-		Vector3 corner = new Vector3(FloorObject.renderer.bounds.min.x + BLOCK_SIZE/2, FloorObject.transform.position.y + FloorObject.renderer.bounds.max.y + BLOCK_SIZE/2, FloorObject.renderer.bounds.min.z + BLOCK_SIZE/2);
-		
-		GameObject originBlock = Instantiate(blockPrefab, corner, this.transform.rotation) as GameObject;
-		originBlock.transform.localScale = Vector3.one * BLOCK_SIZE;
-		originBlock.transform.parent = FloorObject.transform.parent;
+		setFloorTiling();
+
+		spawnOriginBlock();
 
 		FLOOR_MIN = FloorObject.renderer.bounds.min;
 		FLOOR_MAX = FloorObject.renderer.bounds.max;
@@ -32,6 +27,22 @@ public class GameHandler : MonoBehaviour {
 
 	void Update () {
 
+	}
+
+	private void setFloorTiling() {
+		float tilingScale = (FloorObject.transform.parent.localScale.x * FloorObject.transform.localScale.x) / BLOCK_SIZE;
+		
+		FloorObject.renderer.material.mainTextureScale = new Vector2(tilingScale, tilingScale);
+	}
+
+	private void spawnOriginBlock() {
+		Vector3 corner = new Vector3(FloorObject.renderer.bounds.min.x + BLOCK_SIZE/2, FloorObject.transform.position.y + FloorObject.renderer.bounds.max.y + BLOCK_SIZE/2, FloorObject.renderer.bounds.min.z + BLOCK_SIZE/2);
+		GameObject originBlock = Instantiate(blockPrefab, corner, this.transform.rotation) as GameObject;
+		originBlock.transform.localScale = Vector3.one * BLOCK_SIZE;
+		originBlock.transform.parent = FloorObject.transform.parent;
+		//originBlock.GetComponent<block>().increasePriority(0.1f);
+
+		LemmingController.addBlock(originBlock);
 	}
 
 	public static bool isInBounds(Vector3 test) {

@@ -10,11 +10,13 @@ public class block : MonoBehaviour {
 	private float decayCount;
 	private float decayPeriod;
 	public int level;
+	public bool debug;
 	//public List<GameObject> collisionObjects;
 
 	// Use this for initialization
 	void Start () {
 		priority = 0;
+		increasePriority(0.1f);
 		decayCount = 0;
 		decayPeriod = GameHandler.PRIORITY_DECAY_PERIOD;
 	}
@@ -30,18 +32,16 @@ public class block : MonoBehaviour {
 					updatePriority();
 					checkLevel();
 				}
+			} else {
+				updatePriority();
+				checkLevel();
 			}
-		} else {
-			updatePriority();
-			checkLevel();
 		}
-
-		
 	}
 
 	public void updatePriority() {
 		if (decayCount >= decayPeriod) {
-			decreasePriority(LemmingController.DECAY_AMOUNT);
+			decreasePriority(GameHandler.PRIORITY_DECAY_AMOUNT);
 			decayCount = 0;
 		} else {
 			decayCount += Time.deltaTime;
@@ -54,15 +54,19 @@ public class block : MonoBehaviour {
 			priority = 1.0f;
 		}
 		updateColor();
+		LemmingController.addBlock(this.gameObject);
+
+		if (debug)	print("Block: priority = " + priority);
 	}
 
 	public void decreasePriority(float amount) {
 		priority -= amount;
-		if (priority < 0.0f) {
-			priority = 0.0f;
-			LemmingController.removeBlock(this.gameObject);
+		if (priority < 0.02f) {
+			priority = 0.02f;
 		}
 		updateColor();
+
+		if (debug)	print("Block: priority = " + priority);
 	}
 
 	public void updateColor() {
