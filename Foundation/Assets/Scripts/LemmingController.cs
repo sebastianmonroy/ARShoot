@@ -21,14 +21,27 @@ public class LemmingController : MonoBehaviour {
 	public void addBlock(GameObject blockObject) {
 		block block = blockObject.GetComponent<block>();
 		if (block.level > allBlocks.Count) {
-			allBlocks.Add(new List<GameObject> {blockObject});
+			allBlocks.Insert(block.level, new List<GameObject> {blockObject});
 			HIGHEST_LEVEL = block.level;
 		} else {
 			allBlocks[block.level].Insert(block.level, blockObject);
 		}
 	}
 
-	public void getTargetDirection(GameObject lemmingObject) {
-		
+	public void removeBlock(GameObject blockObject) {
+		block block = blockObject.GetComponent<block>();
+		allBlocks[block.level].Remove(blockObject);
 	}
-}
+
+	public Vector3 getTargetDirection(GameObject lemmingObject) {
+		lemming lemming = lemmingObject.GetComponent<lemming>();
+		Vector3 vectorSum = Vector3.zero;
+		//float prioritySum = 0;
+		foreach (GameObject blockObject in allBlocks[lemming.level]) {
+			block block = blockObject.GetComponent<block>();
+			vectorSum += block.priority * (blockObject.transform.position - lemmingObject.transform.position);
+			//prioritySum += block.priority;
+		}
+		Vector3 targetDirection = new Vector3(vectorSum.x, 0, vectorSum.z).normalized;
+		return targetDirection;
+	}
