@@ -48,7 +48,7 @@ public class lemming : MonoBehaviour {
 				walkCount += Time.deltaTime;
 				if (walkCount >= walkPeriod) {
 					walkCount = 0;
-					setRandomRotation();	
+					setTargetRotation();	
 					//changeDirection("random");
 					//print("CHANGE DIRECTION");
 				}
@@ -170,9 +170,12 @@ public class lemming : MonoBehaviour {
 	private void recordClimbedBlock(GameObject blockObject) {
 		block block = blockObject.GetComponent<block>();
 		level = block.level + 1;
-		if (debug) 	print("index = " + block.level);
+		//if (debug) 	print("index = " + block.level);
 		blocksClimbed.Remove(blockObject);
 		blocksClimbed.Add(blockObject);
+
+		LemmingController.removeBlock(blockObject);
+		LemmingController.addBlock(blockObject);
 
 		block.increasePriority(0.02f);
 
@@ -207,6 +210,22 @@ public class lemming : MonoBehaviour {
 		Quaternion rot = Quaternion.AngleAxis(Random.Range(0.0f, 360.0f), Vector3.up);
 		this.transform.rotation = rot;
 		CurrentDirection = this.transform.forward;
+	}
+
+	private void setRotation(Vector3 newRotation)  {
+		this.transform.LookAt(this.transform.position + newRotation);
+		CurrentDirection = this.transform.forward;
+	}
+
+	private void setTargetRotation() {
+		Vector3 targetRotation = LemmingController.getTargetDirection(this.gameObject);
+		if (targetRotation == Vector3.zero) {
+			//if (debug) print("rando");
+			setRandomRotation();
+		} else {
+			if (debug) print("target");
+			setRotation(LemmingController.getTargetDirection(this.gameObject));
+		}
 	}
 
 	//change to an action, default is a random one

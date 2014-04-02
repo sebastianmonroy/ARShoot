@@ -60,6 +60,7 @@ public class block : MonoBehaviour {
 		priority -= amount;
 		if (priority < 0.0f) {
 			priority = 0.0f;
+			LemmingController.removeBlock(this.gameObject);
 		}
 		updateColor();
 	}
