@@ -326,7 +326,8 @@ MonoBehaviour:
   colliding: 0
   outOfBounds: 0
   priority: 0
-  pDuration: 5
+  level: 0
+  debug: 0
 --- !u!114 &11400014
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -342,7 +343,8 @@ MonoBehaviour:
   colliding: 0
   outOfBounds: 0
   priority: 0
-  pDuration: 5
+  level: 0
+  debug: 0
 --- !u!114 &11400016
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -358,7 +360,8 @@ MonoBehaviour:
   colliding: 0
   outOfBounds: 0
   priority: 0
-  pDuration: 5
+  level: 0
+  debug: 0
 --- !u!114 &11400018
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -374,7 +377,8 @@ MonoBehaviour:
   colliding: 0
   outOfBounds: 0
   priority: 0
-  pDuration: 5
+  level: 0
+  debug: 0
 --- !u!114 &11400020
 MonoBehaviour:
   m_ObjectHideFlags: 1

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class TetriminoHandler : MonoBehaviour {
+	public int playerNum;
 	public bool isPreview;
 	public bool isColliding;
 	public bool isOutOfBounds;
@@ -25,6 +26,14 @@ public class TetriminoHandler : MonoBehaviour {
 		if (isPreview) {
 			checkPrediction();
 		}
+	}
+
+	public void setPlayerNum(int playerNum) {
+		this.playerNum = playerNum;
+		/*foreach (Transform t in this.transform) {
+			block block = t.gameObject.GetComponent<block>();
+			block.setPlayerNum(playerNum);
+		}*/
 	}
 
 	public void setPreview(bool preview) {

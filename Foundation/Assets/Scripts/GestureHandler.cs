@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public enum Gesture { CLICK, SCROLL_LEFT, SCROLL_RIGHT, SCROLL_UP, SCROLL_DOWN, NOTHING };
+public enum Gesture { CLICK, SCROLL_LEFT, SCROLL_RIGHT, SCROLL_UP, SCROLL_DOWN, SPACE_BAR, NOTHING };
 
 public class GestureHandler : MonoBehaviour {
 	public static Gesture CurrentGesture;	// The gesture that is currently being executed, can be referenced from other scripts
@@ -90,6 +90,10 @@ public class GestureHandler : MonoBehaviour {
 					CurrentGesture = Gesture.NOTHING;
 				}
 			}
+		} else if (Input.GetKeyDown(KeyCode.Space)) {
+			// PC: Spacebar
+			delayCount = 0;
+			CurrentGesture = Gesture.SPACE_BAR;
 		} else {
 			// No Input Detected
 			delayCount = 0;

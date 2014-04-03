@@ -2,24 +2,20 @@
 using System.Collections;
 
 public class GameHandler : MonoBehaviour {
-	private build BuildHandler;
 	public GameObject blockPrefab;
 	public static float BLOCK_SIZE = 15;
 	public GameObject FloorObject;
-	public static int PLAYER_NUM;
 	public static Vector3 FLOOR_MIN;
 	public static Vector3 FLOOR_MAX;
 	public static float PRIORITY_DECAY_PERIOD = 2.0f;
 	public static float PRIORITY_DECAY_AMOUNT = 0.01f;
 
 	void Start () {
-		PLAYER_NUM = 0;
-		BuildHandler = Camera.main.GetComponent<build>();
 		FloorObject = GameObject.FindWithTag("Floor");
 
 		setFloorTiling();
 
-		spawnOriginBlock();
+		spawnOriginBlock(1);
 
 		FLOOR_MIN = FloorObject.renderer.bounds.min;
 		FLOOR_MAX = FloorObject.renderer.bounds.max;
@@ -35,14 +31,14 @@ public class GameHandler : MonoBehaviour {
 		FloorObject.renderer.material.mainTextureScale = new Vector2(tilingScale, tilingScale);
 	}
 
-	private void spawnOriginBlock() {
+	private void spawnOriginBlock(int playerNum) {
 		Vector3 corner = new Vector3(FloorObject.renderer.bounds.min.x + BLOCK_SIZE/2, FloorObject.transform.position.y + FloorObject.renderer.bounds.max.y + BLOCK_SIZE/2, FloorObject.renderer.bounds.min.z + BLOCK_SIZE/2);
 		GameObject originBlock = Instantiate(blockPrefab, corner, this.transform.rotation) as GameObject;
 		originBlock.transform.localScale = Vector3.one * BLOCK_SIZE;
 		originBlock.transform.parent = FloorObject.transform.parent;
-		//originBlock.GetComponent<block>().increasePriority(0.1f);
+		originBlock.GetComponent<block>().playerNum = playerNum;
 
-		LemmingController.addBlock(originBlock);
+		GameObject.Find("Player " + playerNum).GetComponent<PlayerHandler>().LemmingController.addBlock(originBlock);
 	}
 
 	public static bool isInBounds(Vector3 test) {

@@ -11,19 +11,25 @@ public class block : MonoBehaviour {
 	private float decayPeriod;
 	public int level;
 	public bool debug;
-	//public List<GameObject> collisionObjects;
+	private PlayerHandler PC;
+	public int playerNum;
 
 	// Use this for initialization
 	void Start () {
 		priority = 0;
-		increasePriority(0.1f);
 		decayCount = 0;
 		decayPeriod = GameHandler.PRIORITY_DECAY_PERIOD;
 	}
 
 	// Update is called once per frame
 	void Update () {
-		if (this.transform.parent != null) {
+		if (PC == null) {
+			if (playerNum == 0 && this.transform.parent.GetComponent<TetriminoHandler>() != null) {
+				playerNum = this.transform.parent.GetComponent<TetriminoHandler>().playerNum;
+			} else if (playerNum != 0) {
+				PC = GameObject.Find("Player " + playerNum).GetComponent<PlayerHandler>();
+			}
+		} else {
 			if (this.transform.parent.gameObject.tag == "Tetris") {
 				if (this.transform.parent.GetComponent<TetriminoHandler>().isPreview) {
 					checkCollisions();
@@ -38,6 +44,11 @@ public class block : MonoBehaviour {
 			}
 		}
 	}
+
+	/*public void setPlayerNum(int playerNum) {
+		this.playerNum = playerNum;
+		PC = GameObject.Find("Player " + playerNum).GetComponent<PlayerHandler>();
+	}*/
 
 	public void updatePriority() {
 		if (decayCount >= decayPeriod) {
@@ -54,7 +65,7 @@ public class block : MonoBehaviour {
 			priority = 1.0f;
 		}
 		updateColor();
-		LemmingController.addBlock(this.gameObject);
+		PC.LemmingController.addBlock(this.gameObject);
 
 		if (debug)	print("Block: priority = " + priority);
 	}

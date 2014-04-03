@@ -17,6 +17,7 @@ public class lemming : MonoBehaviour {
 	public bool debug;
 	public int level;
 	public int bestLevel;
+	PlayerHandler PC;
 
 	public enum Action {
 		WALKING,
@@ -28,6 +29,7 @@ public class lemming : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+		PC = this.transform.parent.GetComponent<PlayerHandler>();
 		setAction(Action.WALKING);
 		CurrentDirection = Vector3.forward;
 		walkCount = 0;
@@ -269,12 +271,12 @@ public class lemming : MonoBehaviour {
 		blocksClimbed.Remove(blockObject);
 		blocksClimbed.Add(blockObject);
 
-		//LemmingController.removeBlock(blockObject);
-		LemmingController.addBlock(blockObject);
+		//PC.LemmingController.removeBlock(blockObject);
+		PC.LemmingController.addBlock(blockObject);
 
 		/*block.increasePriority(0.02f);
 
-		if (block.level >= LemmingController.HIGHEST_LEVEL) {
+		if (block.level >= PC.LemmingController.HIGHEST_LEVEL) {
 			highlightClimbedBlocks();
 		}*/
 
@@ -342,13 +344,13 @@ public class lemming : MonoBehaviour {
 	}
 
 	private void setTargetRotation() {
-		Vector3 targetRotation = LemmingController.getTargetDirection(this.gameObject);
+		Vector3 targetRotation = PC.LemmingController.getTargetDirection(this.gameObject);
 		if (targetRotation == Vector3.zero) {
 			if (debug) print("rando");
 			setRandomRotation();
 		} else {
 			if (debug) print("target = " + targetRotation);
-			setRotation(LemmingController.getTargetDirection(this.gameObject));
+			setRotation(PC.LemmingController.getTargetDirection(this.gameObject));
 		}
 	}
 

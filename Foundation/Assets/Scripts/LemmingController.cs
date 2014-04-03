@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class LemmingController : MonoBehaviour {
+	public GameObject lemmingPrefab;
 	public static int HIGHEST_LEVEL;
 	public static List<List<GameObject>> allBlocks = new List<List<GameObject>>();
 
@@ -16,7 +17,12 @@ public class LemmingController : MonoBehaviour {
 	
 	}
 
-	public static void addBlock(GameObject blockObject) {
+	public void spawnLemming() {
+		GameObject lemming = Instantiate(lemmingPrefab, this.transform.position, this.transform.rotation) as GameObject;
+		lemming.transform.parent = this.transform;
+	}
+
+	public void addBlock(GameObject blockObject) {
 		removeBlock(blockObject);
 		block block = blockObject.GetComponent<block>();
 		if (block.level >= allBlocks.Count) {
@@ -36,7 +42,7 @@ public class LemmingController : MonoBehaviour {
 		//printList();
 	}
 
-	public static void removeBlock(GameObject blockObject) {
+	public void removeBlock(GameObject blockObject) {
 		block block = blockObject.GetComponent<block>();
 		//print (allBlocks.Count + " >= " + block.level);
 		if (allBlocks.Count > block.level) {
@@ -45,7 +51,7 @@ public class LemmingController : MonoBehaviour {
 		}
 	}
 
-	public static void addTetrimino(GameObject tetriminoObject) {
+	public void addTetrimino(GameObject tetriminoObject) {
 		foreach (Transform t in tetriminoObject.transform) {
 			if (t.gameObject.tag == "Block") {
 				block block = t.gameObject.GetComponent<block>();
@@ -58,7 +64,7 @@ public class LemmingController : MonoBehaviour {
 		}
 	}
 
-	public static Vector3 getTargetDirection(GameObject lemmingObject) {
+	public Vector3 getTargetDirection(GameObject lemmingObject) {
 		lemming lemming = lemmingObject.GetComponent<lemming>();
 		Vector3 vectorSum = Vector3.zero;
 		//float prioritySum = 0;
@@ -74,7 +80,7 @@ public class LemmingController : MonoBehaviour {
 		return targetDirection;
 	}
 
-	private static void printList() {
+	private void printList() {
 		string str = "List = {";
 		foreach (List<GameObject> list in allBlocks) {
 			str += list.Count + " ";

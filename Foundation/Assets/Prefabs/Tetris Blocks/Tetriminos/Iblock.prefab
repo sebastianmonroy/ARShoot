@@ -8,9 +8,9 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 400012}
-  - 114: {fileID: 11400024}
+  - 114: {fileID: 11400020}
   m_Layer: 0
-  m_Name: Oblock
+  m_Name: Iblock
   m_TagString: Tetris
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -102,10 +102,10 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 15, y: 15, z: 15}
   m_Children:
-  - {fileID: 400018}
-  - {fileID: 400020}
-  - {fileID: 400016}
   - {fileID: 400014}
+  - {fileID: 400018}
+  - {fileID: 400016}
+  - {fileID: 400020}
   m_Father: {fileID: 0}
 --- !u!4 &400014
 Transform:
@@ -114,7 +114,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100014}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: -1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 400012}
@@ -136,7 +136,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100018}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 1}
+  m_LocalPosition: {x: 0, y: -2, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 400012}
@@ -147,7 +147,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100020}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 400012}
@@ -326,7 +326,8 @@ MonoBehaviour:
   colliding: 0
   outOfBounds: 0
   priority: 0
-  pDuration: 5
+  level: 0
+  debug: 0
 --- !u!114 &11400014
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -342,7 +343,8 @@ MonoBehaviour:
   colliding: 0
   outOfBounds: 0
   priority: 0
-  pDuration: 5
+  level: 0
+  debug: 0
 --- !u!114 &11400016
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -358,7 +360,8 @@ MonoBehaviour:
   colliding: 0
   outOfBounds: 0
   priority: 0
-  pDuration: 5
+  level: 0
+  debug: 0
 --- !u!114 &11400018
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -374,8 +377,9 @@ MonoBehaviour:
   colliding: 0
   outOfBounds: 0
   priority: 0
-  pDuration: 5
---- !u!114 &11400024
+  level: 0
+  debug: 0
+--- !u!114 &11400020
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}

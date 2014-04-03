@@ -8,27 +8,24 @@ public class build : MonoBehaviour {
 	public GameObject OblockPrefab;
 	public GameObject IblockPrefab;
 
-	public GameObject TblockPredictionPrefab;
-	public GameObject LblockPredictionPrefab;
-	public GameObject ZblockPredictionPrefab;
-	public GameObject OblockPredictionPrefab;
-	public GameObject IblockPredictionPrefab;
-
 	public float waitDuration;				// How long to wait between acknowledging gestures
 	private float waitCount;
 	public GameObject nextTetris;
 	public GameObject selectedTetris;
-	public GameObject selectedBlock;
-	public GameObject selectedPreviewBlock;
+	private GameObject selectedBlock;
+	private GameObject selectedPreviewBlock;
 	public bool debug;
 
+	public PlayerHandler PC;
+
 	void Start () {
+		PC = this.transform.GetComponent<PlayerHandler>();
 		waitCount = waitDuration/5;	// Don't feel like waiting as long for the first tetris block to spawn
 		//getNextTetris();
 	}
 	
 	void Update () {
-		if (selectedTetris == null) {
+		if (PC != null && selectedTetris == null) {
 			getNextTetris();
 		}
 
@@ -65,7 +62,7 @@ public class build : MonoBehaviour {
 							// create tetrimino where the prediction is (if not colliding or out of bounds)
 							if (!selectedTetrimino.isColliding && !selectedTetrimino.isOutOfBounds) {
 								selectedTetrimino.setPreview(false);
-								LemmingController.addTetrimino(selectedTetris);
+								PC.LemmingController.addTetrimino(selectedTetris);
 								selectedBlock.GetComponent<block>().destroyPreview();
 								getNextTetris();
 								waitCount = 0;
@@ -114,6 +111,11 @@ public class build : MonoBehaviour {
 						waitCount = 0;
 					}
 					break;
+				case Gesture.SPACE_BAR:
+					// SPACE_BAR gesture detected
+					PC.LemmingController.spawnLemming();
+
+					break;
 				default:
 					break;
 			}
@@ -156,6 +158,7 @@ public class build : MonoBehaviour {
 		} else {
 			selectedTetris = nextTetris;
 		}
+		selectedTetris.GetComponent<TetriminoHandler>().playerNum = PC.PLAYER_NUM;;
 		selectedTetris.active = false;
 
 		switch (Random.Range((int) 0, (int) 5)) {
@@ -178,6 +181,7 @@ public class build : MonoBehaviour {
 				nextTetris = Instantiate(LblockPrefab, Vector3.zero, Quaternion.identity) as GameObject;
 				break;
 		}
+		nextTetris.GetComponent<TetriminoHandler>().playerNum = PC.PLAYER_NUM;
 		nextTetris.active = false;
 	}
 }
