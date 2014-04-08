@@ -25,6 +25,10 @@ public class GameHandler : MonoBehaviour {
 
 	}
 
+	void OnPlayerConnected(NetworkPlayer player) {
+		
+	}
+
 	private void setFloorTiling() {
 		float tilingScale = (FloorObject.transform.parent.localScale.x * FloorObject.transform.localScale.x) / BLOCK_SIZE;
 		
