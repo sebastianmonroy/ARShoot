@@ -11,7 +11,8 @@ public class NetworkHandler : MonoBehaviour {
 		if (this.isServer) {
 			StartServer();
 		} else {
-			JoinServer();
+			//JoinServer();
+			this.gameObject.GetComponent<ConnectGUI>.active = true;
 		}
 	}
 
@@ -24,12 +25,12 @@ public class NetworkHandler : MonoBehaviour {
 
     private void JoinServer()
     {
-        Network.Connect("127.0.0.1", 25001);
+        Network.Connect("0.0.0.0", connectPort);
     }
 
     void OnServerInitialized() 
 	{
-		Debug.Log("Server initialized and ready");
+		Debug.Log("Server " + MasterServer.ipAddress + ":" + MasterServer.port + " initialized and ready");
 	}
 
 	void OnConnectedToServer() 
