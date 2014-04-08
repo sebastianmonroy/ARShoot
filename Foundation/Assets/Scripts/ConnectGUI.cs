@@ -130,7 +130,7 @@ public class ConnectGUI : MonoBehaviour
 	// first, on the client
 	void OnConnectedToServer() 
 	{
-		Debug.Log ("This CLIENT has connected to a server");
+		Debug.Log ("This CLIENT has connected to server " + MasterServer.ipAddress + ":" + MasterServer.port);
 	}
 
 	void OnDisconnectedFromServer(NetworkDisconnection info) 
