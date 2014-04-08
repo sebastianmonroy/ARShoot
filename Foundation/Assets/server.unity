@@ -166,7 +166,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 62cd60c12c95c0b46856cc1717e081ee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  connectPort: 25001
+  isServer: 1
 --- !u!21 &455044158
 Material:
   serializedVersion: 3

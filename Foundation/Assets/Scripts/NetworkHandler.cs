@@ -2,14 +2,15 @@
 using System.Collections;
 
 public class NetworkHandler : MonoBehaviour {
+	public bool isServer;
 	private const string typeName = "AR Network Sample";
     private const string gameName = "Test Game";
-	public int connectPort = 25001;
+	private int connectPort = 25001;
 
 	void Start() {
-		if (Network.isServer) {
+		if (this.isServer) {
 			StartServer();
-		} else if (Network.isClient) {
+		} else {
 			JoinServer();
 		}
 	}
