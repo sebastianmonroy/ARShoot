@@ -3,19 +3,19 @@ using System.Collections;
 
 public class GameHandler : MonoBehaviour {
 	public GameObject blockPrefab;
+	public GameObject playerPrefab;
 	public static float BLOCK_SIZE = 15;
-	public GameObject FloorObject;
+	private GameObject FloorObject;
 	public static Vector3 FLOOR_MIN;
 	public static Vector3 FLOOR_MAX;
 	public static float PRIORITY_DECAY_PERIOD = 2.0f;
 	public static float PRIORITY_DECAY_AMOUNT = 0.01f;
+	private int NUM_PLAYERS = 0;
 
 	void Start () {
 		FloorObject = GameObject.FindWithTag("Floor");
 
 		setFloorTiling();
-
-		spawnOriginBlock(1);
 
 		FLOOR_MIN = FloorObject.renderer.bounds.min;
 		FLOOR_MAX = FloorObject.renderer.bounds.max;
@@ -25,8 +25,12 @@ public class GameHandler : MonoBehaviour {
 
 	}
 
-	void OnPlayerConnected(NetworkPlayer player) {
-		
+	public void NewPlayer() {
+		NUM_PLAYERS++;
+		GameObject newPlayer = Instantiate(playerPrefab, Vector3.zero, Quaternion.identity) as GameObject;
+		newPlayer.name = "Player " + NUM_PLAYERS;
+		newPlayer.GetComponent<PlayerHandler>().PLAYER_NUM = NUM_PLAYERS;
+		spawnOriginBlock(NUM_PLAYERS);
 	}
 
 	private void setFloorTiling() {
