@@ -1,7 +1,9 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class GameHandler : MonoBehaviour {
+	public static GameHandler Instance;
 	public GameObject blockPrefab;
 	public GameObject playerPrefab;
 	public static float BLOCK_SIZE = 15;
@@ -10,9 +12,14 @@ public class GameHandler : MonoBehaviour {
 	public static Vector3 FLOOR_MAX;
 	public static float PRIORITY_DECAY_PERIOD = 2.0f;
 	public static float PRIORITY_DECAY_AMOUNT = 0.01f;
-	private int NUM_PLAYERS = 0;
+	public int NUM_PLAYERS = 0;
+	public int PLAYER_NUM = 0;
+
+	public Dictionary<NetworkPlayer, GameObject> playerList = new Dictionary<NetworkPlayer, GameObject>();
 
 	void Start () {
+		Instance = this;
+        Network.isMessageQueueRunning = true;
 		FloorObject = GameObject.FindWithTag("Floor");
 
 		setFloorTiling();
@@ -25,28 +32,132 @@ public class GameHandler : MonoBehaviour {
 
 	}
 
-	public void NewPlayer() {
-		NUM_PLAYERS++;
-		GameObject newPlayer = Instantiate(playerPrefab, Vector3.zero, Quaternion.identity) as GameObject;
-		newPlayer.name = "Player " + NUM_PLAYERS;
-		newPlayer.GetComponent<PlayerHandler>().PLAYER_NUM = NUM_PLAYERS;
-		spawnOriginBlock(NUM_PLAYERS);
+	[RPC]
+	public void SetTetrisType(int tetrisID, NetworkMessageInfo info) {
+		if (info.sender != Network.player || Network.isServer) {
+			int playerNum = int.Parse("" + info.sender);
+			GameObject playerObject = GameObject.Find("Player " + playerNum);
+			build playerBuild = playerObject.GetComponent<build>();
+			playerBuild.selectedTetrisID = tetrisID;
+			Debug.Log("SetTetrisType for Player " + playerNum);
+		}
+	}
+
+	[RPC]
+	public void SetTetrisLocation(Vector3 loc, NetworkMessageInfo info) {
+		if (info.sender != Network.player || Network.isServer) {
+			int playerNum = int.Parse("" + info.sender);
+			GameObject playerObject = GameObject.Find("Player " + playerNum);
+			build playerBuild = playerObject.GetComponent<build>();
+			playerBuild.selectedTetrisLocation = loc;
+			Debug.Log("SetTetrisLocation for Player " + playerNum);
+		}
+	}
+
+	[RPC]
+	public void SetTetrisRotation(Quaternion rot, NetworkMessageInfo info) {
+		if (info.sender != Network.player || Network.isServer) {
+			int playerNum = int.Parse("" + info.sender);
+			GameObject playerObject = GameObject.Find("Player " + playerNum);
+			build playerBuild = playerObject.GetComponent<build>();
+			playerBuild.selectedTetrisRotation = rot;
+			Debug.Log("SetTetrisRotation for Player " + playerNum);
+		}
+	}
+
+	[RPC]
+	public void CreateTetris(NetworkMessageInfo info) {
+		if (info.sender != Network.player || Network.isServer) {
+			int playerNum = int.Parse("" + info.sender);
+			GameObject playerObject = GameObject.Find("Player " + playerNum);
+			build playerBuild = playerObject.GetComponent<build>();
+			playerBuild.createTetris();
+			Debug.Log("CreateTetris for Player " + playerNum);
+		}
+	}
+
+	[RPC]
+	public void AddPlayerToServer(NetworkPlayer networkPlayer) {
+		if (Network.isServer) {
+			if (playerList.ContainsKey(networkPlayer))
+	        {
+	            Debug.LogError("AddPlayerToServer: Player " + networkPlayer + " already exists!");
+	        } else {
+	        	NUM_PLAYERS++;
+				spawnOriginBlock(NUM_PLAYERS);
+				GameObject newPlayer = GameObject.Find("Player " + networkPlayer);
+				newPlayer.active = true;
+				playerList.Add(networkPlayer, newPlayer);
+				Debug.Log("AddPlayerToServer: Player " + networkPlayer + " added.");
+	        }
+	    }
+	}
+
+	public void AddPlayersToClients() {
+		if (Network.isServer) {
+			foreach (KeyValuePair<NetworkPlayer, GameObject> entry in playerList) {
+				//Debug.Log("Key = " + entry.Key + ", Value = " + entry.Value);
+				networkView.RPC("AddPlayerToClient", RPCMode.Others, entry.Key);
+			}
+		}
+	}
+
+	[RPC]
+	public void AddPlayerToClient(NetworkPlayer networkPlayer) {
+		if (Network.isClient) {
+			spawnOriginBlock(int.Parse("" + networkPlayer));
+			GameObject newPlayer = GameObject.Find("Player " + networkPlayer);
+			newPlayer.active = true;
+			playerList.Add(networkPlayer, newPlayer);
+
+			if (Network.player == networkPlayer) {
+				//PLAYER_NUM = int.Parse(networkPlayer);
+				newPlayer.GetComponent<PlayerHandler>().isThisPlayer = true;
+				Debug.Log("AddPlayerToClient: Player " + networkPlayer + " assigned.");
+			} else {
+				Debug.Log("AddPlayerToClient: Player " + networkPlayer + " added to Player " + Network.player + "'s playerList.");
+			}
+		}
+	}
+
+	public void spawnOriginBlock(int playerNum) {
+		Vector3 corner = Vector3.zero;
+		switch (playerNum) {
+			case 1:
+				corner = new Vector3(FloorObject.renderer.bounds.min.x + BLOCK_SIZE/2, FloorObject.transform.position.y + FloorObject.renderer.bounds.max.y + BLOCK_SIZE/2, FloorObject.renderer.bounds.min.z + BLOCK_SIZE/2);
+				break;
+			case 2:
+				corner = new Vector3(FloorObject.renderer.bounds.max.x - BLOCK_SIZE/2, FloorObject.transform.position.y + FloorObject.renderer.bounds.max.y + BLOCK_SIZE/2, FloorObject.renderer.bounds.max.z - BLOCK_SIZE/2);
+				break;
+			case 3:
+				corner = new Vector3(FloorObject.renderer.bounds.min.x + BLOCK_SIZE/2, FloorObject.transform.position.y + FloorObject.renderer.bounds.max.y + BLOCK_SIZE/2, FloorObject.renderer.bounds.max.z - BLOCK_SIZE/2);
+				break;
+			case 4:
+				corner = new Vector3(FloorObject.renderer.bounds.max.x - BLOCK_SIZE/2, FloorObject.transform.position.y + FloorObject.renderer.bounds.max.y + BLOCK_SIZE/2, FloorObject.renderer.bounds.min.z + BLOCK_SIZE/2);
+				break;
+			default:
+				break;
+		}
+
+		GameObject originBlock = Instantiate(blockPrefab, corner, this.transform.rotation) as GameObject;
+		originBlock.transform.localScale = Vector3.one * BLOCK_SIZE;
+		originBlock.transform.parent = FloorObject.transform.parent;
+		originBlock.GetComponent<block>().playerNum = playerNum;
+
+		GameObject playerObject = GameObject.Find("Player " + playerNum);
+		playerObject.GetComponent<LemmingController>().addBlock(originBlock);
+	}
+
+
+	[RPC]
+	public void CreateBlock(GameObject block) {
+
 	}
 
 	private void setFloorTiling() {
 		float tilingScale = (FloorObject.transform.parent.localScale.x * FloorObject.transform.localScale.x) / BLOCK_SIZE;
 		
 		FloorObject.renderer.material.mainTextureScale = new Vector2(tilingScale, tilingScale);
-	}
-
-	private void spawnOriginBlock(int playerNum) {
-		Vector3 corner = new Vector3(FloorObject.renderer.bounds.min.x + BLOCK_SIZE/2, FloorObject.transform.position.y + FloorObject.renderer.bounds.max.y + BLOCK_SIZE/2, FloorObject.renderer.bounds.min.z + BLOCK_SIZE/2);
-		GameObject originBlock = Instantiate(blockPrefab, corner, this.transform.rotation) as GameObject;
-		originBlock.transform.localScale = Vector3.one * BLOCK_SIZE;
-		originBlock.transform.parent = FloorObject.transform.parent;
-		originBlock.GetComponent<block>().playerNum = playerNum;
-
-		GameObject.Find("Player " + playerNum).GetComponent<PlayerHandler>().LemmingController.addBlock(originBlock);
 	}
 
 	public static bool isInBounds(Vector3 test) {

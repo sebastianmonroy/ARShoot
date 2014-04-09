@@ -11,7 +11,11 @@ public class build : MonoBehaviour {
 	public float waitDuration;				// How long to wait between acknowledging gestures
 	private float waitCount;
 	public GameObject nextTetris;
+	private int nextTetrisID;
 	public GameObject selectedTetris;
+	public int selectedTetrisID;
+	public Vector3 selectedTetrisLocation;
+	public Quaternion selectedTetrisRotation; 
 	private GameObject selectedBlock;
 	private GameObject selectedPreviewBlock;
 	public bool debug;
@@ -64,12 +68,15 @@ public class build : MonoBehaviour {
 								selectedTetrimino.setPreview(false);
 								PC.LemmingController.addTetrimino(selectedTetris);
 								selectedBlock.GetComponent<block>().destroyPreview();
+								GameHandler.Instance.networkView.RPC("SetTetrisType", RPCMode.Others, selectedTetrisID);
+								GameHandler.Instance.networkView.RPC("SetTetrisLocation", RPCMode.Others, selectedTetris.transform.position);
+								GameHandler.Instance.networkView.RPC("SetTetrisRotation", RPCMode.Others, selectedTetris.transform.rotation);
+								GameHandler.Instance.networkView.RPC("CreateTetris", RPCMode.Others);
 								getNextTetris();
 								waitCount = 0;
 							}
 						}
 					}
-					
 					break;
 				case Gesture.SCROLL_LEFT:
 					// SCROLL_LEFT gesture detected
@@ -130,57 +137,60 @@ public class build : MonoBehaviour {
 		Vector3 offset = dir * selectedTetris.GetComponent<TetriminoHandler>().getOffset(dir);
 		//print("offset = " + offset);
 		selectedTetris.transform.position = selectedPreviewBlock.transform.position + offset;
+		//selectedTetrisLocation = selectedTetris.transform.position;
+		//selectedTetrisRotation = selectedTetris.transform.rotation;
+	}
+
+	public GameObject instantiateTetris(int tetrisID) {
+		GameObject tetrisObject;
+		switch (tetrisID) {
+			case 0:
+				tetrisObject = Instantiate(TblockPrefab, Vector3.zero, Quaternion.identity) as GameObject;
+				break;
+			case 1:
+				tetrisObject = Instantiate(LblockPrefab, Vector3.zero, Quaternion.identity) as GameObject;
+				break;
+			case 2:
+				tetrisObject = Instantiate(ZblockPrefab, Vector3.zero, Quaternion.identity) as GameObject;
+				break;
+			case 3:
+				tetrisObject = Instantiate(OblockPrefab, Vector3.zero, Quaternion.identity) as GameObject;
+				break;
+			case 4:
+				tetrisObject = Instantiate(IblockPrefab, Vector3.zero, Quaternion.identity) as GameObject;
+				break;
+			default:
+				tetrisObject = Instantiate(LblockPrefab, Vector3.zero, Quaternion.identity) as GameObject;
+				break;
+		}
+
+		return tetrisObject;
+	}
+
+	public void createTetris() {
+		selectedTetris = instantiateTetris(selectedTetrisID);
+		selectedTetris.GetComponent<TetriminoHandler>().setPreview(false);
+		selectedTetris.transform.position = selectedTetrisLocation;
+		selectedTetris.transform.rotation = selectedTetrisRotation;
+		selectedTetris.GetComponent<TetriminoHandler>().playerNum = PC.PLAYER_NUM;
+		PC.LemmingController.addTetrimino(selectedTetris);
 	}
 
 	public void getNextTetris() {
 		//print ("get next");
 		if (nextTetris == null) {
-			switch (Random.Range((int) 0, (int) 5)) {
-				case 0:
-					selectedTetris = Instantiate(TblockPrefab, Vector3.zero, Quaternion.identity) as GameObject;
-					break;
-				case 1:
-					selectedTetris = Instantiate(LblockPrefab, Vector3.zero, Quaternion.identity) as GameObject;
-					break;
-				case 2:
-					selectedTetris = Instantiate(ZblockPrefab, Vector3.zero, Quaternion.identity) as GameObject;
-					break;
-				case 3:
-					selectedTetris = Instantiate(OblockPrefab, Vector3.zero, Quaternion.identity) as GameObject;
-					break;
-				case 4:
-					selectedTetris = Instantiate(IblockPrefab, Vector3.zero, Quaternion.identity) as GameObject;
-					break;
-				default:
-					selectedTetris = Instantiate(LblockPrefab, Vector3.zero, Quaternion.identity) as GameObject;
-					break;
-			}
+			int tetrisID = Random.Range((int) 0, (int) 5);
+			selectedTetris = instantiateTetris(tetrisID);
+			selectedTetrisID = tetrisID;
 		} else {
 			selectedTetris = nextTetris;
+			selectedTetrisID = nextTetrisID;
 		}
-		selectedTetris.GetComponent<TetriminoHandler>().playerNum = PC.PLAYER_NUM;;
+		selectedTetris.GetComponent<TetriminoHandler>().playerNum = PC.PLAYER_NUM;
 		selectedTetris.active = false;
 
-		switch (Random.Range((int) 0, (int) 5)) {
-			case 0:
-				nextTetris = Instantiate(TblockPrefab, Vector3.zero, Quaternion.identity) as GameObject;
-				break;
-			case 1:
-				nextTetris = Instantiate(LblockPrefab, Vector3.zero, Quaternion.identity) as GameObject;
-				break;
-			case 2:
-				nextTetris = Instantiate(ZblockPrefab, Vector3.zero, Quaternion.identity) as GameObject;
-				break;
-			case 3:
-				nextTetris = Instantiate(OblockPrefab, Vector3.zero, Quaternion.identity) as GameObject;
-				break;
-			case 4:
-				nextTetris = Instantiate(IblockPrefab, Vector3.zero, Quaternion.identity) as GameObject;
-				break;
-			default:
-				nextTetris = Instantiate(LblockPrefab, Vector3.zero, Quaternion.identity) as GameObject;
-				break;
-		}
+		nextTetrisID = Random.Range((int) 0, (int) 5);
+		nextTetris = instantiateTetris(nextTetrisID);
 		nextTetris.GetComponent<TetriminoHandler>().playerNum = PC.PLAYER_NUM;
 		nextTetris.active = false;
 	}

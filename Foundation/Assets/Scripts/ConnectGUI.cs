@@ -25,6 +25,12 @@ public class ConnectGUI : MonoBehaviour
 	
 	private string debugText;
 	
+	void Start() {
+		MasterServer.ipAddress = "127.0.0.1";
+    	MasterServer.port = 23466;
+    	Network.natFacilitatorIP = "127.0.0.1";
+    	Network.natFacilitatorPort = connectPort;
+	}
 
 	// Supports both client and server setup
 	void OnGUI ()
@@ -34,14 +40,6 @@ public class ConnectGUI : MonoBehaviour
 		{
 			// Currently disconnected: Neither client nor server
 			GUILayout.Label("Connection status: Disconnected");
-		
-			int.TryParse(GUILayout.TextField(connectPort.ToString()), out connectPort);
-		
-			GUILayout.BeginVertical();
-			if (GUILayout.Button ("Start Server"))
-			{
-                StartServer();
-			}
 
 			if (GUILayout.Button ("Refresh Hosts"))
 			{
@@ -57,7 +55,7 @@ public class ConnectGUI : MonoBehaviour
                         JoinServer(hostList[i]);
                 }
             }
-			GUILayout.EndVertical();
+			//GUILayout.EndVertical();
 		} else {
 			// One or more connection(s)!		
 
@@ -131,6 +129,7 @@ public class ConnectGUI : MonoBehaviour
 	void OnConnectedToServer() 
 	{
 		Debug.Log ("This CLIENT has connected to server " + MasterServer.ipAddress + ":" + MasterServer.port);
+		//GameHandler.Instance.AddPlayer(Network.player);
 	}
 
 	void OnDisconnectedFromServer(NetworkDisconnection info) 
@@ -156,7 +155,7 @@ public class ConnectGUI : MonoBehaviour
 
 	void OnPlayerDisconnected(NetworkPlayer player) 
 	{
-		Debug.Log("Player disconnected from: " + player.ipAddress+":" + player.port);
+		Debug.Log("Player disconnected from: " + player.ipAddress + ":" + player.port);
 	}
 
 	// other network callbacks

@@ -3,6 +3,7 @@ using System.Collections;
 
 public class PlayerHandler : MonoBehaviour {
 	public int PLAYER_NUM;
+	public bool isThisPlayer;
 	public build BuildController;
 	public LemmingController LemmingController;
 
