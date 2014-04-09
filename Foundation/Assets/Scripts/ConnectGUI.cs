@@ -19,6 +19,7 @@ public class ConnectGUI : MonoBehaviour
     private const string typeName = "AR Network Sample";
     private const string gameName = "Test Game";
 	public int connectPort = 25001;
+	public string connectIP = "127.0.0.1";
 
     private bool isRefreshingHostList = false;
     private HostData[] hostList;
@@ -26,10 +27,11 @@ public class ConnectGUI : MonoBehaviour
 	private string debugText;
 	
 	void Start() {
+		Application.runInBackground = true;
 		MasterServer.ipAddress = "127.0.0.1";
     	MasterServer.port = 23466;
     	Network.natFacilitatorIP = "127.0.0.1";
-    	Network.natFacilitatorPort = connectPort;
+    	//Network.natFacilitatorPort = connectPort;
 	}
 
 	// Supports both client and server setup
@@ -41,9 +43,13 @@ public class ConnectGUI : MonoBehaviour
 			// Currently disconnected: Neither client nor server
 			GUILayout.Label("Connection status: Disconnected");
 
+			connectIP = GUILayout.TextField(connectIP);
+
 			if (GUILayout.Button ("Refresh Hosts"))
 			{
 				// Connect to the "connectToIP" and "connectPort" as entered via the GUI
+				MasterServer.ipAddress = connectIP;
+				Network.natFacilitatorIP = connectIP;
                 RefreshHostList();
 			}
 		

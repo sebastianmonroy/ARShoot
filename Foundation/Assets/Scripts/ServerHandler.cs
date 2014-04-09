@@ -5,17 +5,18 @@ public class ServerHandler : MonoBehaviour {
 	public int MAX_PLAYERS = 2;
 	private const string typeName = "AR Network Sample";
     private const string gameName = "Test Game";
+    private string connectIP = "127.0.0.1";
 	private int connectPort = 25001;
 	private int NUM_PLAYERS = 0;
-	private string txtfield = "1";
+	private string playersField = "1";
 	private bool button;
 
 	void OnGUI() {
-		txtfield = GUI.TextField(new Rect(10, 50, 100, 20), txtfield, 1);
-		button = GUI.Button(new Rect(120, 50, 100, 20), "Start Server");
-
+		connectIP = GUILayout.TextField(connectIP);
+		button = GUILayout.Button("Start Server");
+		playersField = GUILayout.TextField(playersField);
 		if (button) {
-			int.TryParse(txtfield, out NUM_PLAYERS);
+			int.TryParse(playersField, out NUM_PLAYERS);
 			if (NUM_PLAYERS >= 1 && NUM_PLAYERS <= MAX_PLAYERS) {
 				StartServer();
 			}
@@ -29,9 +30,9 @@ public class ServerHandler : MonoBehaviour {
 
 	private void StartServer()
     {
-    	MasterServer.ipAddress = "127.0.0.1";
+    	MasterServer.ipAddress = connectIP;
     	MasterServer.port = 23466;
-    	Network.natFacilitatorIP = "127.0.0.1";
+    	Network.natFacilitatorIP = connectIP;
     	Network.natFacilitatorPort = connectPort;
 
         Network.InitializeServer(10, connectPort, !Network.HavePublicAddress());
